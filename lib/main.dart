@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+
 import 'components/upload_file_item_widget.dart';
+import 'components/user_email.dart';
+import 'components/my_settings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +32,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return const SafeArea(
       child: Scaffold(
-          body: UploadFileItemWidget()
+          body: Column(
+            children: [
+            UploadFileItemWidget(),
+            UserEmailWidget(),
+            MySettingsWidget(),
+        ],//children
+      ),
       ),
     );
   }
