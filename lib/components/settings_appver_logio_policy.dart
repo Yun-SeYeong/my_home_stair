@@ -6,7 +6,7 @@ class SettingsNotiAppverLogioPolicyWidget extends StatelessWidget {
   const SettingsNotiAppverLogioPolicyWidget.dart({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //240531
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
