@@ -6,7 +6,7 @@ class UserEmailWidget extends StatelessWidget {
   const UserEmailWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //test git
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
