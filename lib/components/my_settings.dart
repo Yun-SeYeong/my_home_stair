@@ -8,7 +8,7 @@ class MySettingsWidget extends StatelessWidget {
   Widget _buildSettingItem(String text, String iconPath) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+      children: [ //Test git push
         Row(
           children: [
             SvgPicture.asset(
