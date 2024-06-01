@@ -30,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Scaffold(
           body: Column(
             children: [
@@ -38,9 +38,12 @@ class _MyHomePageState extends State<MyHomePage> {
               title: '등기부등본.pdf',
               description: '서울 서초구 신반포로 270 101호',
               date: '2024.01.01 00:00:00',
+              onDownload: () {
+                print('test');
+              },
             ),
-            UserEmailWidget(),
-            MySettingsWidget(),
+            const UserEmailWidget(),
+            const MySettingsWidget(),
         ],//children
       ),
       ),

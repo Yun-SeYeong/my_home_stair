@@ -6,12 +6,14 @@ class UploadFileItemWidget extends StatelessWidget {
   final String title;
   final String description;
   final String date;
+  final Function onDownload;
 
   const UploadFileItemWidget({
     super.key,
     required this.title,
     required this.description,
     required this.date,
+    required this.onDownload,
   });
 
   @override
@@ -45,30 +47,29 @@ class UploadFileItemWidget extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Inter'),
                 ),
-                Text(
-                    description,
+                Text(description,
                     style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
-                        color: Color(0xFF8B8B8B)
-                    )
-                ),
-                Text(
-                    date,
+                        color: Color(0xFF8B8B8B))),
+                Text(date,
                     style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
-                        color: Color(0xFF8B8B8B)
-                    )
-                ),
+                        color: Color(0xFF8B8B8B))),
               ],
             ),
-            SvgPicture.asset(
-              'images/download.svg',
-              semanticsLabel: 'Download',
-            ),
+            InkWell(
+              onTap: () {
+                onDownload();
+              },
+              child: SvgPicture.asset(
+                'images/download.svg',
+                semanticsLabel: 'Download',
+              ),
+            )
           ]),
     );
   }
