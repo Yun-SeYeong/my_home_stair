@@ -3,7 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class UploadFileItemWidget extends StatelessWidget {
-  const UploadFileItemWidget({Key? key}) : super(key: key);
+  final String title;
+  final String description;
+  final String date;
+  final Function onDownload;
+
+  const UploadFileItemWidget({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.onDownload,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,41 +36,40 @@ class UploadFileItemWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '등기부등본.pdf',
-                  style: TextStyle(
+                  title,
+                  style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Inter'),
                 ),
-                Text(
-                  '서울 서초구 신반포로 270 101호',
-                    style: TextStyle(
+                Text(description,
+                    style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
-                      color: Color(0xFF8B8B8B)
-                    )
-                ),
-                Text(
-                  '2024.01.01 00:00:00',
-                    style: TextStyle(
+                        color: Color(0xFF8B8B8B))),
+                Text(date,
+                    style: const TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
-                        color: Color(0xFF8B8B8B)
-                    )
-                ),
+                        color: Color(0xFF8B8B8B))),
               ],
             ),
-            SvgPicture.asset(
-              'images/download.svg',
-              semanticsLabel: 'Download',
-            ),
+            InkWell(
+              onTap: () {
+                onDownload();
+              },
+              child: SvgPicture.asset(
+                'images/download.svg',
+                semanticsLabel: 'Download',
+              ),
+            )
           ]),
     );
   }
