@@ -34,7 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
           body: Column(
             children: [
-            UploadFileItemWidget(),
+            UploadFileItemWidget(
+              title: '등기부등본.pdf',
+              description: '서울 서초구 신반포로 270 101호',
+              date: '2024.01.01 00:00:00',
+            ),
             UserEmailWidget(),
             MySettingsWidget(),
         ],//children
