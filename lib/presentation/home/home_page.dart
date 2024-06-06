@@ -29,11 +29,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     final uiState = context.watch<HomePageBloc>().state;
-    pageController.animateToPage(
-      uiState.selectedTab.index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -81,16 +76,31 @@ class _HomePageState extends State<HomePage> {
                   context
                       .read<HomePageBloc>()
                       .add(SelectBottomNavigationEvent(HomeTab.archive));
+                  pageController.animateToPage(
+                    HomeTab.archive.index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 },
                 () {
                   context
                       .read<HomePageBloc>()
                       .add(SelectBottomNavigationEvent(HomeTab.home));
+                  pageController.animateToPage(
+                    HomeTab.home.index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 },
                 () {
                   context
                       .read<HomePageBloc>()
                       .add(SelectBottomNavigationEvent(HomeTab.setting));
+                  pageController.animateToPage(
+                    HomeTab.setting.index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
                 },
               ),
             ),
