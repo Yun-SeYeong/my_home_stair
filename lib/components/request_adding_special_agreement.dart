@@ -2,11 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class RoomConfirmRequestWidget extends StatelessWidget {
-  const RoomConfirmRequestWidget({Key? key}) : super(key: key);
+class RequestAddingSpecialAgreementWidget extends StatelessWidget {
+  final String title;
+  final String comment;
+  final Function onCopy;
+
+  RequestAddingSpecialAgreementWidget({
+    super.key,
+    required this.title,
+    required this.comment,
+    required this.onCopy,
+  });
 
   @override
-  Widget build(BuildContext context) { //test git
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -21,31 +30,41 @@ class RoomConfirmRequestWidget extends StatelessWidget {
           ),
         ],
       ),
-      child: const Row(
+      child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Column(
+            Expanded(
+            child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '방 확인 요청',
+                  title,
                   style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Inter'),
                 ),
-                Text(
-                  '방을 확인 하셨다면 아래 승인 버튼을 눌려주세요.',
-                  style: TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
-                      color: Color(0xFF8B8B8B),
-                  ),
-                ),
-              ], //children
+                const SizedBox(height: 10.0),
+                Text(comment,
+                    style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                        color: Color(0xFF0E2288))),
+
+              ],
+            ),
+            ),
+            InkWell(
+              onTap: () {
+                onCopy();
+              },
+              child: SvgPicture.asset(
+                'images/Copy.svg',
+                semanticsLabel: 'Copy',
+              ),
             ),
           ]),
     );

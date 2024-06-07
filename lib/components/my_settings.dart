@@ -3,36 +3,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MySettingsWidget extends StatelessWidget {
-  const MySettingsWidget({Key? key}) : super(key: key);
+  final Function goNotice;
+  final Function goLogout;
+  final Function goPolicy;
+  final Function goAppver;
 
-  Widget _buildSettingItem(String text, String iconPath) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [ //Test git push
-        Row(
-          children: [
-            SvgPicture.asset(
-              iconPath,
-              semanticsLabel: text,
+  MySettingsWidget({
+    super.key,
+    required this.goNotice,
+    required this.goLogout,
+    required this.goPolicy,
+    required this.goAppver,
+  });
 
-            ),
-            const SizedBox(width: 10), // 텍스트와 아이콘 사이의 간격
-            Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Inter',
-                color: Color(0xFF000000),
+  Widget _buildSettingItem(String text, String iconPath, Function onTap) {
+    return InkWell(
+      onTap: () => onTap(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                iconPath,
+                semanticsLabel: text,
               ),
-            ),
-          ],
-        ),
-        SvgPicture.asset(
-          'images/Expand_right.svg', // 우측에 위치한 공통 아이콘
-          semanticsLabel: 'Expand_right',
-        ),
-      ],
+              const SizedBox(width: 10), // 텍스트와 아이콘 사이의 간격
+              Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                  color: Color(0xFF000000),
+                ),
+              ),
+            ],
+          ),
+          SvgPicture.asset(
+            'images/Expand_right.svg', // 우측에 위치한 공통 아이콘
+            semanticsLabel: 'Expand_right',
+          ),
+        ],
+      ),
     );
   }
 
@@ -63,14 +76,14 @@ class MySettingsWidget extends StatelessWidget {
               fontFamily: 'Inter',
             ),
           ),
-          const SizedBox(height: 10), // 설정 제목과 첫 항목 사이의 간격
-          _buildSettingItem('알림 설정', 'images/Noti.svg'),
-          const SizedBox(height: 10), // 항목 사이의 간격
-          _buildSettingItem('로그아웃', 'images/Logout.svg'),
-          const SizedBox(height: 10),
-          _buildSettingItem('약관 및 정책', 'images/Policy.svg'),
-          const SizedBox(height: 10),
-          _buildSettingItem('앱 버전', 'images/AppVer.svg'),
+           SizedBox(height: 10), // 설정 제목과 첫 항목 사이의 간격
+          _buildSettingItem('알림 설정', 'images/Noti.svg', goNotice),
+           SizedBox(height: 10), // 항목 사이의 간격
+          _buildSettingItem('로그아웃', 'images/Logout.svg', goLogout),
+           SizedBox(height: 10),
+          _buildSettingItem('약관 및 정책', 'images/Policy.svg', goPolicy),
+           SizedBox(height: 10),
+          _buildSettingItem('앱 버전', 'images/AppVer.svg', goAppver),
         ],
       ),
     );
