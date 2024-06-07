@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_home_stair/presentation/login/login_page.dart';
 
 import 'home_page.dart';
 
@@ -9,6 +10,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   HomePageBloc(this.context) : super(const HomePageState()) {
     on<SelectBottomNavigationEvent>(_onSelectBottomNavigationEvent);
+    on<LogoutEvent>(_onLogoutEvent);
   }
 
   void _onSelectBottomNavigationEvent(
@@ -17,9 +19,18 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   ) {
     emit(state.copy(selectedTab: event.tab));
   }
+
+  void _onLogoutEvent(
+    LogoutEvent event,
+    Emitter<HomePageState> emit,
+  ) {
+    Navigator.pushNamedAndRemoveUntil(context, LoginPage.route, (route) => false);
+  }
 }
 
 sealed class HomePageEvent {}
+
+class LogoutEvent extends HomePageEvent {}
 
 class SelectBottomNavigationEvent extends HomePageEvent {
   final HomeTab tab;

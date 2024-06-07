@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copy(isError: false, isLoading: false));
 
       if (!context.mounted) throw Exception('Context is not mounted');
-      Navigator.pushNamed(context, HomePage.route);
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.route, (route) => false);
     }).catchError((error) {
       emit(state.copy(isError: true, isLoading: false));
     });

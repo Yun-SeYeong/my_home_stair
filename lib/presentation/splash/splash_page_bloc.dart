@@ -20,7 +20,6 @@ class SplashPageBloc extends Bloc<SplashPageEvent, SplashPageState> {
   void _onLoadSplashPageEvent(
       LoadSplashPageEvent event, Emitter<SplashPageState> emit) async {
     try {
-      await _sharedPreferencesRepository.deleteTokenResponse();
       await _sharedPreferencesRepository.getTokenResponse().then((value) async {
         if (value != null) {
           await _authRepository.reissue(ReissueRequest(
