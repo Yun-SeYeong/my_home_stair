@@ -1,11 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'home_page.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
+  final BuildContext context;
 
-  HomePageBloc() : super(const HomePageState()) {
+  HomePageBloc(this.context) : super(const HomePageState()) {
     on<SelectBottomNavigationEvent>(_onSelectBottomNavigationEvent);
   }
 

@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:my_home_stair/presentation/home/home_page.dart';
-import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/presentation/splash/splash_page_bloc.dart';
 
 class SplashPage extends StatefulWidget {
@@ -38,14 +36,7 @@ class _SplashPageState extends State<SplashPage> {
   void _setTimer(BuildContext context) {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       timer.cancel();
-      context.read<SplashPageBloc>().add((LoadSplashPageEvent(
-        onFail: () {
-          Navigator.popAndPushNamed(context, LoginPage.route);
-        },
-        onSuccess: () {
-          Navigator.popAndPushNamed(context, HomePage.route);
-        }
-      )));
+      context.read<SplashPageBloc>().add((LoadSplashPageEvent()));
     });
   }
 }

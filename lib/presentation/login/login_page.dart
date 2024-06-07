@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/components/my_house_stair_button.dart';
-import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/presentation/login/login_bloc.dart';
 import 'package:my_home_stair/presentation/signup/sign_up_page.dart';
 
@@ -88,9 +87,7 @@ class _LoginPageState extends State<LoginPage> {
             MyHouseStairButton(
               enabled: !uiState.isLoading,
               onPressed: () {
-                context.read<LoginBloc>().add(SignInEvent(onSuccess: () {
-                  Navigator.pushNamed(context, HomePage.route);
-                }));
+                context.read<LoginBloc>().add(SignInEvent());
               },
               text: '로그인',
             ),

@@ -18,4 +18,10 @@ class SharedPreferencesRepository {
     await prefs.setString('accessToken', tokenResponse.accessToken);
     await prefs.setString('refreshToken', tokenResponse.refreshToken);
   }
+
+  Future<void> deleteTokenResponse() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
+  }
 }

@@ -1,14 +1,17 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/dto/request/sign_in_request.dart';
+import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
 
 class LoginBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
   final SharedPreferencesRepository _sharedPreferencesRepository;
+  final BuildContext context;
 
-  LoginBloc(this._authRepository, this._sharedPreferencesRepository)
+  LoginBloc(this.context, this._authRepository, this._sharedPreferencesRepository)
       : super(const AuthState()) {
     on<SignInEvent>(_onSignInEvent);
     on<UpdateEmailEvent>(_onUpdateEmail);
@@ -24,7 +27,9 @@ class LoginBloc extends Bloc<AuthEvent, AuthState> {
     .then((value) async {
       await _sharedPreferencesRepository.saveTokenResponse(value.content);
       emit(state.copy(isError: false, isLoading: false));
-      event.onSuccess();
+
+      if (!context.mounted) throw Exception('Context is not mounted');
+      Navigator.pushNamed(context, HomePage.route);
     }).catchError((error) {
       emit(state.copy(isError: true, isLoading: false));
     });
@@ -43,11 +48,7 @@ sealed class AuthEvent {
   const AuthEvent();
 }
 
-class SignInEvent extends AuthEvent {
-  final Function onSuccess;
-
-  const SignInEvent({required this.onSuccess});
-}
+class SignInEvent extends AuthEvent {}
 
 class UpdateEmailEvent extends AuthEvent {
   final String email;
