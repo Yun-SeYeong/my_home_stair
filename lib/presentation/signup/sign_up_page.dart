@@ -110,9 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
             MyHouseStairButton(
               enabled: !uiState.isLoading,
               onPressed: () {
-                context.read<SignUpBloc>().add(SignUpEvent(onSuccess: () {
-                  Navigator.pop(context);
-                }));
+                context.read<SignUpBloc>().add(SignUpEvent());
               },
               text: '회원가입',
             ),

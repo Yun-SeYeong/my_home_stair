@@ -1,5 +1,6 @@
 
-import 'package:my_home_stair/dto/response/token_response.dart';
+
+import 'package:my_home_stair/dto/response/auth/token_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesRepository {
@@ -17,5 +18,11 @@ class SharedPreferencesRepository {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', tokenResponse.accessToken);
     await prefs.setString('refreshToken', tokenResponse.refreshToken);
+  }
+
+  Future<void> deleteTokenResponse() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    await prefs.remove('refreshToken');
   }
 }

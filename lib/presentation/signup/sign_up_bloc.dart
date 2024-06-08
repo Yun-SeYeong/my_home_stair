@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/dto/request/sign_up_request.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
 
 class SignUpBloc extends Bloc<SignUpPageEvent, SignUpState> {
+  final BuildContext context;
   final AuthRepository _authRepository;
 
-  SignUpBloc(this._authRepository) : super(const SignUpState()) {
+  SignUpBloc(this.context, this._authRepository) : super(const SignUpState()) {
     on<SignUpEvent>(_onSignUpEvent);
     on<UpdateEmailEvent>(_onUpdateEmail);
     on<UpdatePasswordEvent>(_onUpdatePassword);
@@ -43,7 +45,7 @@ class SignUpBloc extends Bloc<SignUpPageEvent, SignUpState> {
         isPasswordConfirmTextError: false,
         isLoading: false,
       ));
-      event.onSuccess();
+      Navigator.pop(context);
     }).catchError((error) {
       emit(state.copy(
         isEmailTextError: true,
@@ -82,11 +84,7 @@ sealed class SignUpPageEvent {
   const SignUpPageEvent();
 }
 
-class SignUpEvent extends SignUpPageEvent {
-  final Function onSuccess;
-
-  const SignUpEvent({required this.onSuccess});
-}
+class SignUpEvent extends SignUpPageEvent {}
 
 class UpdateEmailEvent extends SignUpPageEvent {
   final String email;
