@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class UserEmailWidget extends StatelessWidget {
-  final String userEmail;
+class CheckboxRoomConfirmWidget extends StatelessWidget {
+  final String title;
 
- UserEmailWidget({
+
+  const CheckboxRoomConfirmWidget({
     super.key,
-    required this.userEmail,
+    required this.title,
 
- });
-
+  });
 
   @override
-  Widget build(BuildContext context) { //test git
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -36,18 +36,20 @@ class UserEmailWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 Text(
-                  userEmail,
-                  style: TextStyle(
+                  title,
+                  style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
-                      color: Color(0xFF000000),
-      ),
+                      fontFamily: 'Inter'),
                 ),
-              ], //children
+
+              ],
             ),
+      SvgPicture.asset(
+          'images/Check_fill.svg',
+          semanticsLabel: 'Expand_right',
+      ),
           ]),
     );
   }
