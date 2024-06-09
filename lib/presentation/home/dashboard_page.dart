@@ -27,7 +27,9 @@ class DashboardPage extends StatelessWidget {
         Positioned(
           right: 20,
           bottom: 84,
-          child: _floatingButtonWidget(),
+          child: _floatingButtonWidget(
+            () => Navigator.of(context).pushNamed("CreateContractPage"),
+          ),
         )
       ],
     );
@@ -49,20 +51,23 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _floatingButtonWidget() {
-    return Container(
-      height: 50,
-      width: 50,
-      padding: const EdgeInsets.all(13),
-      decoration: const BoxDecoration(
-        color: ColorStyles.primaryColor,
-        shape: BoxShape.circle,
-      ),
-      child: SvgPicture.asset(
-        'images/AddContract.svg',
-        colorFilter: const ColorFilter.mode(
-          Colors.white,
-          BlendMode.srcIn,
+  Widget _floatingButtonWidget(Function onTap) {
+    return InkWell(
+      onTap: () => onTap(),
+      child: Container(
+        height: 50,
+        width: 50,
+        padding: const EdgeInsets.all(13),
+        decoration: const BoxDecoration(
+          color: ColorStyles.primaryColor,
+          shape: BoxShape.circle,
+        ),
+        child: SvgPicture.asset(
+          'images/AddContract.svg',
+          colorFilter: const ColorFilter.mode(
+            Colors.white,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

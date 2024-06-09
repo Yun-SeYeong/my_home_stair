@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_home_stair/components/color_styles.dart';
+import 'package:my_home_stair/presentation/contract/create_contract/create_contract_page_bloc.dart';
 import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
@@ -11,6 +12,7 @@ import 'package:nested/nested.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'presentation/contract/create_contract/create_contract_page.dart';
 import 'presentation/login/login_bloc.dart';
 import 'presentation/login/login_page.dart';
 import 'presentation/signup/sign_up_bloc.dart';
@@ -33,7 +35,6 @@ class MyHomeStair extends StatefulWidget {
 }
 
 class _MyHomeStairState extends State<MyHomeStair> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,6 +53,8 @@ class _MyHomeStairState extends State<MyHomeStair> {
               return _fadeTransition(_blocProvider(const SignUpPage()));
             case HomePage.route:
               return _fadeTransition(_blocProvider(const HomePage()));
+            case CreateContractPage.route:
+              return _fadeTransition(_blocProvider(const CreateContractPage()));
             default:
               return _fadeTransition(_blocProvider(const SplashPage()));
           }
@@ -83,7 +86,8 @@ List<SingleChildWidget> _initBlocs() {
         getIt<SharedPreferencesRepository>(),
       ),
     ),
-    BlocProvider(create: (context) => SignUpBloc(context, getIt<AuthRepository>())),
+    BlocProvider(
+        create: (context) => SignUpBloc(context, getIt<AuthRepository>())),
     BlocProvider(
       create: (context) => SplashPageBloc(
         context,
@@ -92,6 +96,7 @@ List<SingleChildWidget> _initBlocs() {
       ),
     ),
     BlocProvider(create: (context) => HomePageBloc(context)),
+    BlocProvider(create: (context) => CreateContractPageBloc(context)),
   ];
 }
 
