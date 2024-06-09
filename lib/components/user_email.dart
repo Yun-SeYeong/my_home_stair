@@ -5,15 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 class UserEmailWidget extends StatelessWidget {
   final String userEmail;
 
- UserEmailWidget({
+  const UserEmailWidget({
     super.key,
     required this.userEmail,
-
- });
-
+  });
 
   @override
-  Widget build(BuildContext context) { //test git
+  Widget build(BuildContext context) {
+    //test git
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -36,15 +35,14 @@ class UserEmailWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 Text(
                   userEmail,
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Inter',
-                      color: Color(0xFF000000),
-      ),
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Inter',
+                    color: Color(0xFF000000),
+                  ),
                 ),
               ], //children
             ),

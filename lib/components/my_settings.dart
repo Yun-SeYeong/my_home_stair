@@ -8,7 +8,7 @@ class MySettingsWidget extends StatelessWidget {
   final Function goPolicy;
   final Function goAppver;
 
-  MySettingsWidget({
+  const MySettingsWidget({
     super.key,
     required this.goNotice,
     required this.goLogout,

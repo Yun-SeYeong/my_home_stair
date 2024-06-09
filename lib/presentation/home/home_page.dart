@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_home_stair/components/color_styles.dart';
+import 'package:my_home_stair/presentation/home/archive_page.dart';
+import 'package:my_home_stair/presentation/home/dashboard_page.dart';
 import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
+import 'package:my_home_stair/presentation/home/setting_page.dart';
 
 class HomePage extends StatefulWidget {
   static const route = "HomePage";
@@ -53,15 +56,9 @@ class _HomePageState extends State<HomePage> {
                 child: PageView(
                   controller: pageController,
                   children: [
-                    Container(
-                      color: Colors.red,
-                    ),
-                    Container(
-                      color: Colors.green,
-                    ),
-                    Container(
-                      color: Colors.blue,
-                    ),
+                    ArchivePage(key: widget.key),
+                    DashboardPage(key: widget.key),
+                    SettingPage(key: widget.key),
                   ],
                 ),
               ),
