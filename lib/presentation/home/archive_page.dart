@@ -18,11 +18,15 @@ class ArchivePage extends StatelessWidget {
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.search),
               label: Text('검색'),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: ColorStyles.primaryColor),
+              labelStyle: TextStyle(
+                color: ColorStyles.primaryColor,
+                fontWeight: FontWeight.bold,
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: ColorStyles.primaryColor),
+                borderSide: BorderSide(color: ColorStyles.primaryColor, width: 2.5),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorStyles.primaryColor, width: 2.5),
               ),
               enabled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,

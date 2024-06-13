@@ -50,11 +50,11 @@ class _LoginPageState extends State<LoginPage> {
               },
               decoration: InputDecoration(
                 label: const Text('이메일'),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: ColorStyles.primaryColor),
-                ),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: ColorStyles.primaryColor),
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
                 ),
                 enabled: true,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -70,13 +70,11 @@ class _LoginPageState extends State<LoginPage> {
               },
               decoration: InputDecoration(
                 label: const Text('비밀번호'),
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide(color: ColorStyles.primaryColor),
-                ),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: ColorStyles.primaryColor,
-                  ),
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 error:

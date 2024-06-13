@@ -31,13 +31,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+    final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
     final uiState = context.watch<HomePageBloc>().state;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: statusBarHeight),
+        padding: EdgeInsets.only(top: statusBarHeight, bottom: bottomPadding),
         child: Stack(
           children: [
             Positioned(

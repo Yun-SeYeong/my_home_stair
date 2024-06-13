@@ -16,6 +16,13 @@ class _CreateContractPageState extends State<CreateContractPage> {
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+    final isContractNew = true;
+    final pageIndex = 1;
+
+    final pages = [
+      _selectNewOrJoinWidget(isContractNew),
+      _selectContractRoleType(isContractNew),
+    ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -39,7 +46,7 @@ class _CreateContractPageState extends State<CreateContractPage> {
               child: Container(
                 color: ColorStyles.backgroundColor,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _selectNewOrJoinWidget(),
+                child: pages[pageIndex],
               ),
             ),
             Positioned(
@@ -57,13 +64,13 @@ class _CreateContractPageState extends State<CreateContractPage> {
     );
   }
 
-  Column _selectNewOrJoinWidget() {
+  Column _selectNewOrJoinWidget(bool isContractNew) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
         const Text(
-          '새로운 계약서를 생성할지 선택해주세요.',
+          '계약서 생성 여부를 선택해주세요.',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -79,6 +86,7 @@ class _CreateContractPageState extends State<CreateContractPage> {
               )),
           '새로운 계약서 생성',
           () {},
+          isContractNew,
         ),
         const SizedBox(height: 20),
         _button(
@@ -89,17 +97,71 @@ class _CreateContractPageState extends State<CreateContractPage> {
               )),
           '계약서 참여',
           () {},
+          !isContractNew,
         ),
       ],
     );
   }
 
-  Widget _button(Widget icon, String text, Function onTap) {
+  Column _selectContractRoleType(bool isContractNew) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        const Text(
+          '어떤 역할인지 선택해주세요',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: ColorStyles.primaryColor,
+          ),
+        ),
+        const SizedBox(height: 40),
+        _button(
+          SvgPicture.asset('images/AddContract.svg',
+              colorFilter: const ColorFilter.mode(
+                Colors.black,
+                BlendMode.srcIn,
+              )),
+          '임차인',
+          () {},
+          isContractNew,
+        ),
+        const SizedBox(height: 20),
+        _button(
+          SvgPicture.asset('images/File_dock_search.svg',
+              colorFilter: const ColorFilter.mode(
+                Colors.black,
+                BlendMode.srcIn,
+              )),
+          '중계인',
+          () {},
+          !isContractNew,
+        ),
+        const SizedBox(height: 20),
+        _button(
+          SvgPicture.asset('images/File_dock_search.svg',
+              colorFilter: const ColorFilter.mode(
+                Colors.black,
+                BlendMode.srcIn,
+              )),
+          '임대인',
+          () {},
+          !isContractNew,
+        ),
+      ],
+    );
+  }
+
+  Widget _button(Widget icon, String text, Function onTap, bool isCheck) {
     return Container(
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
+        border: isCheck
+            ? Border.all(color: ColorStyles.primaryColor, width: 2.5)
+            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05), // 그림자의 색상 및 투명도
