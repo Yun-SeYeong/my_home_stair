@@ -39,10 +39,7 @@ class _MyHomeStairState extends State<MyHomeStair> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
-          colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: ColorStyles.primaryColor,
-                surfaceBright: Colors.white,
-              ),
+          scaffoldBackgroundColor: Colors.white,
           fontFamily: 'Pretendard',
         ),
         initialRoute: SplashPage.route,
