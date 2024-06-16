@@ -25,7 +25,7 @@ class UploadFileItemWidget extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // 그림자의 색상 및 투명도
+            color: Colors.black.withOpacity(0.05), // 그림자의 색상 및 투명도
             offset: const Offset(0, 0), // x: 0, y: 0
             blurRadius: 20, // blur 반경
             spreadRadius: 0, // spread 반경
