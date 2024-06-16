@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_home_stair/dto/request/reissue_request.dart';
+import 'package:my_home_stair/dto/request/auth/reissue_request.dart';
 import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
@@ -36,7 +36,7 @@ class SplashPageBloc extends Bloc<SplashPageEvent, SplashPageState> {
       });
     } catch (error) {
       if (!context.mounted) throw Exception('Context is not mounted');
-      Navigator.popAndPushNamed(context, HomePage.route);
+      Navigator.popAndPushNamed(context, LoginPage.route);
     }
   }
 }

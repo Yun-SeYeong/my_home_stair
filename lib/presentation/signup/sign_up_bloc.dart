@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_home_stair/dto/request/sign_up_request.dart';
+import 'package:my_home_stair/dto/request/auth/sign_up_request.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
 
 class SignUpBloc extends Bloc<SignUpPageEvent, SignUpState> {

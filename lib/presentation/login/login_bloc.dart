@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_home_stair/dto/request/sign_in_request.dart';
+import 'package:my_home_stair/dto/request/auth/sign_in_request.dart';
 import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/repository/auth_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
