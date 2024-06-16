@@ -17,15 +17,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PageController pageController = PageController(initialPage: 1);
+  final PageController _pageController = PageController(initialPage: 1);
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    // Controller 초기화
+    _pageController.addListener(_selectBottomNavigation);
+    _scrollController.addListener(_loadMoreContractsEvent);
 
-    pageController.addListener(() {
-      context.read<HomePageBloc>().add(SelectBottomNavigationEvent(HomeTab.values[pageController.page?.round() ?? 1]));
-    });
+    // HomePage 초기화 이벤트
+    context.read<HomePageBloc>().add(InitStateEvent());
+  }
+
+  @override
+  void dispose() {
+    // Controller 해제
+    _pageController.removeListener(_selectBottomNavigation);
+    _scrollController.removeListener(_loadMoreContractsEvent);
+    _pageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreContractsEvent() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      context.read<HomePageBloc>().add(LoadMoreContractsEvent());
+    }
+  }
+
+  void _selectBottomNavigation() {
+    context.read<HomePageBloc>().add(SelectBottomNavigationEvent(HomeTab.values[_pageController.page?.round() ?? 1]));
   }
 
   @override
@@ -55,10 +79,10 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 color: ColorStyles.backgroundColor,
                 child: PageView(
-                  controller: pageController,
+                  controller: _pageController,
                   children: [
                     ArchivePage(key: widget.key),
-                    DashboardPage(key: widget.key),
+                    DashboardPage(key: widget.key, scrollController: _scrollController),
                     SettingPage(key: widget.key),
                   ],
                 ),
@@ -71,21 +95,21 @@ class _HomePageState extends State<HomePage> {
               child: _bottomNavigationWidget(
                 uiState.selectedTab,
                 () {
-                  pageController.animateToPage(
+                  _pageController.animateToPage(
                     HomeTab.archive.index,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 },
                 () {
-                  pageController.animateToPage(
+                  _pageController.animateToPage(
                     HomeTab.home.index,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
                 },
                 () {
-                  pageController.animateToPage(
+                  _pageController.animateToPage(
                     HomeTab.setting.index,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,

@@ -94,7 +94,12 @@ List<SingleChildWidget> _initBlocs() {
         getIt<SharedPreferencesRepository>(),
       ),
     ),
-    BlocProvider(create: (context) => HomePageBloc(context)),
+    BlocProvider(
+        create: (context) => HomePageBloc(
+              context,
+              getIt<ContractRepository>(),
+              getIt<SharedPreferencesRepository>(),
+            )),
     BlocProvider(
       create: (context) => CreateContractPageBloc(
         context,
@@ -114,10 +119,7 @@ void _dependencyInjection() {
         'Content-Type': 'application/json',
       },
     ),
-  )..interceptors.add(LogInterceptor(
-    requestBody: true,
-    responseBody: true
-  )));
+  )..interceptors.add(LogInterceptor(requestBody: true, responseBody: true)));
 
   // Repository 초기화
   getIt.registerSingleton(AuthRepository(getIt<Dio>()));

@@ -14,7 +14,7 @@ abstract class ContractRepository {
   factory ContractRepository(Dio dio, {String baseUrl}) = _ContractRepository;
 
   @GET('')
-  Future<PageResponse<ContractResponse>> getContracts(@Query('page') int page, @Query('size') int size);
+  Future<PageResponse<ContractResponse>> getContracts(@Header('Authorization') String authorization, @Query('page') int page, @Query('size') int size);
 
   @POST('')
   Future<void> createContract(@Header('Authorization') String authorization, @Body() ContractRequest contractRequest);

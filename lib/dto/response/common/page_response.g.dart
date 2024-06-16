@@ -11,6 +11,7 @@ PageResponse<T> _$PageResponseFromJson<T>(
   T Function(Object? json) fromJsonT,
 ) =>
     PageResponse<T>(
+      pageable: Pageable.fromJson(json['pageable'] as Map<String, dynamic>),
       content: (json['content'] as List<dynamic>).map(fromJsonT).toList(),
     );
 
@@ -20,6 +21,7 @@ Map<String, dynamic> _$PageResponseToJson<T>(
 ) =>
     <String, dynamic>{
       'content': instance.content.map(toJsonT).toList(),
+      'pageable': instance.pageable,
     };
 
 Pageable _$PageableFromJson(Map<String, dynamic> json) => Pageable(

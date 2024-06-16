@@ -12,7 +12,7 @@ class ContractResponse {
   final String address;
   final String addressDetail;
   final ContractRole contractRole;
-  final ContractStatus contractStatus;
+  final ContractStatus status;
   final DateTime createdAt;
 
   ContractResponse({
@@ -20,7 +20,7 @@ class ContractResponse {
     required this.address,
     required this.addressDetail,
     required this.contractRole,
-    required this.contractStatus,
+    required this.status,
     required this.createdAt,
   });
 
@@ -29,4 +29,13 @@ class ContractResponse {
 
   Map<String, dynamic> toJson() => _$ContractResponseToJson(this);
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ContractResponse &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

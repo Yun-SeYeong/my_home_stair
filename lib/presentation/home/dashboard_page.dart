@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_home_stair/components/color_styles.dart';
+import 'package:my_home_stair/dto/response/contract/contract_response.dart';
+import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({Key? key}) : super(key: key);
+  final ScrollController scrollController;
+
+  const DashboardPage({Key? key, required this.scrollController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final contracts = [];
+    final uiState = context.watch<HomePageBloc>().state;
+    List<ContractResponse> contracts = uiState.contracts.toList();
+
     return Stack(
       children: [
         Positioned(
@@ -19,7 +27,34 @@ class DashboardPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 _titleWidget(),
                 const SizedBox(height: 20),
-                if (contracts.isEmpty) _emptyContractWidget(),
+                if (contracts.isEmpty)
+                  _emptyContractWidget()
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: contracts.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              child: Center(
+                                child: Text(contracts[index].id),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                const SizedBox(height: 20),
+                if (uiState.isLoading)
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                const SizedBox(height: 80),
               ],
             ),
           ),

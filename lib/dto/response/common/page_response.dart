@@ -5,8 +5,9 @@ part 'page_response.g.dart';
 @JsonSerializable(genericArgumentFactories: true)
 class PageResponse<T> {
   final List<T> content;
+  final Pageable pageable;
 
-  const PageResponse({required this.content});
+  const PageResponse({required this.pageable, required this.content});
 
   factory PageResponse.fromJson(
           Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>

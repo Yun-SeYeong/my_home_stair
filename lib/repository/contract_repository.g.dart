@@ -22,6 +22,7 @@ class _ContractRepository implements ContractRepository {
 
   @override
   Future<PageResponse<ContractResponse>> getContracts(
+    String authorization,
     int page,
     int size,
   ) async {
@@ -30,7 +31,8 @@ class _ContractRepository implements ContractRepository {
       r'page': page,
       r'size': size,
     };
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': authorization};
+    _headers.removeWhere((k, v) => v == null);
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<PageResponse<ContractResponse>>(Options(
