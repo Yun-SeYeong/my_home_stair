@@ -28,7 +28,7 @@ class MySettingsWidget extends StatelessWidget {
                 iconPath,
                 semanticsLabel: text,
               ),
-              const SizedBox(width: 10), // 텍스트와 아이콘 사이의 간격
+              const SizedBox(width: 15), // 텍스트와 아이콘 사이의 간격
               Text(
                 text,
                 style: const TextStyle(
@@ -76,13 +76,13 @@ class MySettingsWidget extends StatelessWidget {
               fontFamily: 'Inter',
             ),
           ),
-           SizedBox(height: 10), // 설정 제목과 첫 항목 사이의 간격
+           SizedBox(height: 20), // 설정 제목과 첫 항목 사이의 간격
           _buildSettingItem('알림 설정', 'images/Noti.svg', goNotice),
-           SizedBox(height: 10), // 항목 사이의 간격
+           SizedBox(height: 15), // 항목 사이의 간격
           _buildSettingItem('로그아웃', 'images/Logout.svg', goLogout),
-           SizedBox(height: 10),
+           SizedBox(height: 15),
           _buildSettingItem('약관 및 정책', 'images/Policy.svg', goPolicy),
-           SizedBox(height: 10),
+           SizedBox(height: 15),
           _buildSettingItem('앱 버전', 'images/AppVer.svg', goAppver),
         ],
       ),
