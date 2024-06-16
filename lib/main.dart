@@ -11,6 +11,7 @@ import 'components/request_adding_special_agreement.dart';
 import 'components/input_text_box.dart';
 import 'components/input_request_widget.dart';
 import 'components/action_icon_widgeet.dart';
+import 'components/contract_status_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -140,6 +141,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   searchButton: () {
                     print("검색 자동완성");
                   }),
+              ContractStatusWidget(
+                title: '임차인',
+                statusNow: '방확인',
+                address: '서울 서초구 신반포로 270 101호',
+                onButton: () {
+                  print("동작");
+                },
+                //isActive: ,
+              ),
             ], //children
           ),
         ),
