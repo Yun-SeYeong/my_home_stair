@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page.dart';
+import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
 import 'package:my_home_stair/presentation/contract/create_contract/create_contract_page_bloc.dart';
 import 'package:my_home_stair/presentation/home/home_page.dart';
 import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
@@ -54,6 +56,11 @@ class _MyHomeStairState extends State<MyHomeStair> {
               return _fadeTransition(_blocProvider(const HomePage()));
             case CreateContractPage.route:
               return _fadeTransition(_blocProvider(const CreateContractPage()));
+            case ContractDetailPage.route:
+              return _fadeTransition(
+                _blocProvider(ContractDetailPage(
+                    contractId: settings.arguments as String)),
+              );
             default:
               return _fadeTransition(_blocProvider(const SplashPage()));
           }
@@ -107,6 +114,13 @@ List<SingleChildWidget> _initBlocs() {
         getIt<SharedPreferencesRepository>(),
       ),
     ),
+    BlocProvider(
+      create: (context) => ContractDetailPageBloc(
+        context,
+        getIt<SharedPreferencesRepository>(),
+        getIt<ContractRepository>(),
+      ),
+    )
   ];
 }
 
@@ -114,7 +128,7 @@ void _dependencyInjection() {
   // Dio 초기화
   getIt.registerSingleton<Dio>(Dio(
     BaseOptions(
-      baseUrl: 'http://10.0.2.2:8080',
+      baseUrl: 'http://192.168.45.116:8080',
       headers: {
         'Content-Type': 'application/json',
       },

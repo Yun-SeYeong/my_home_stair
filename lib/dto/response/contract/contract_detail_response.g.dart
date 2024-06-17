@@ -40,5 +40,5 @@ const _$ContractStatusEnumMap = {
   ContractStatus.roomCheck: 'ROOM_CHECK',
   ContractStatus.provisionalContract: 'PROVISIONAL_CONTRACT',
   ContractStatus.contract: 'CONTRACT',
-  ContractStatus.complete: 'COMPLETE',
+  ContractStatus.complete: 'COMPLETED',
 };

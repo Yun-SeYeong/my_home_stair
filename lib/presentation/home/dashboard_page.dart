@@ -34,27 +34,35 @@ class DashboardPage extends StatelessWidget {
                     child: ListView.builder(
                       controller: scrollController,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: contracts.length,
+                      itemCount: contracts.length + (uiState.isLoading ? 0 : 1),
                       itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            SizedBox(
+                        if (index == contracts.length) {
+                          return contracts.length > 10 ? const SizedBox(
+                            height: 60,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ) : const SizedBox();
+                        } else {
+                          final contract = contracts[index];
+                          return InkWell(
+                            onTap: () {
+                              context.read<HomePageBloc>().add(
+                                  LoadContractDetailEvent(contract.id));
+                            },
+                            child: SizedBox(
                               height: 80,
                               child: Center(
-                                child: Text(contracts[index].id),
+                                child: Text(contract.id),
                               ),
                             ),
-                          ],
-                        );
+                          );
+                        }
                       },
                     ),
                   ),
-                const SizedBox(height: 20),
-                if (uiState.isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                const SizedBox(height: 80),
+                if (uiState.isLoading) const SizedBox(height: 32),
+                const SizedBox(height: 64),
               ],
             ),
           ),

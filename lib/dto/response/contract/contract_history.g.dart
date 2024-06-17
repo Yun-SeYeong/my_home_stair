@@ -12,13 +12,13 @@ ContractHistory _$ContractHistoryFromJson(Map<String, dynamic> json) =>
       json['isDefault'] as bool,
       json['title'] as String,
       json['description'] as String,
-      $enumDecode(_$ContractTypeEnumMap, json['type']),
+      $enumDecode(_$ContractHistoryTypeEnumMap, json['type']),
       json['isCompleted'] as bool,
-      json['fileURL'] as String,
-      json['textInput'] as String,
-      $enumDecode(_$ContractRoleEnumMap, json['verifyRole']),
+      json['fileURL'] as String?,
+      json['textInput'] as String?,
+      $enumDecode(_$ContractRoleEnumMap, json['verifiedBy']),
       (json['historyTags'] as List<dynamic>).map((e) => e as String).toList(),
-      DateTime.parse(json['createdAt'] as String),
+      DateTime.parse(json['updatedAt'] as String),
     );
 
 Map<String, dynamic> _$ContractHistoryToJson(ContractHistory instance) =>
@@ -27,20 +27,19 @@ Map<String, dynamic> _$ContractHistoryToJson(ContractHistory instance) =>
       'isDefault': instance.isDefault,
       'title': instance.title,
       'description': instance.description,
-      'type': _$ContractTypeEnumMap[instance.type]!,
+      'type': _$ContractHistoryTypeEnumMap[instance.type]!,
       'isCompleted': instance.isCompleted,
       'fileURL': instance.fileURL,
       'textInput': instance.textInput,
-      'verifyRole': _$ContractRoleEnumMap[instance.verifyRole]!,
+      'verifiedBy': _$ContractRoleEnumMap[instance.verifiedBy]!,
       'historyTags': instance.historyTags,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
     };
 
-const _$ContractTypeEnumMap = {
-  ContractType.roomCheck: 'ROOM_CHECK',
-  ContractType.provisionalContract: 'PROVISIONAL_CONTRACT',
-  ContractType.contract: 'CONTRACT',
-  ContractType.complete: 'COMPLETE',
+const _$ContractHistoryTypeEnumMap = {
+  ContractHistoryType.check: 'CHECK',
+  ContractHistoryType.file: 'FILE',
+  ContractHistoryType.text: 'TEXT',
 };
 
 const _$ContractRoleEnumMap = {

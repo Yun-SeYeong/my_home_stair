@@ -76,16 +76,13 @@ class _HomePageState extends State<HomePage> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: Container(
-                color: ColorStyles.backgroundColor,
-                child: PageView(
-                  controller: _pageController,
-                  children: [
-                    ArchivePage(key: widget.key),
-                    DashboardPage(key: widget.key, scrollController: _scrollController),
-                    SettingPage(key: widget.key),
-                  ],
-                ),
+              child: PageView(
+                controller: _pageController,
+                children: [
+                  ArchivePage(key: widget.key),
+                  DashboardPage(key: widget.key, scrollController: _scrollController),
+                  SettingPage(key: widget.key),
+                ],
               ),
             ),
             Positioned(

@@ -2,9 +2,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum ContractRole {
   @JsonValue("LESSEE")
-  lessee,
+  lessee("임대인"),
   @JsonValue("LANDLORD")
-  landlord,
+  landlord("중계인"),
   @JsonValue("INTERMEDIARY")
-  intermediary
+  intermediary("임차인");
+
+  final String name;
+
+  const ContractRole(this.name);
 }

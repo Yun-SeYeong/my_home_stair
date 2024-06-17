@@ -9,7 +9,7 @@ part 'contract_step.g.dart';
 class ContractStep {
   final ContractStatus status;
   final bool requestEnabled;
-  final ContractHistory contractHistories;
+  final List<ContractHistory> contractHistories;
   final DateTime createdAt;
 
   ContractStep(

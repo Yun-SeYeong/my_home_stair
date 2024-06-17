@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/components/my_settings.dart';
 import 'package:my_home_stair/components/user_email.dart';
+import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
@@ -18,7 +20,9 @@ class SettingPage extends StatelessWidget {
           const SizedBox(height: 20),
           MySettingsWidget(
               goNotice: () {},
-              goLogout: () {},
+              goLogout: () {
+                context.read<HomePageBloc>().add(LogoutEvent());
+              },
               goPolicy: () {},
               goAppver: () {})
         ],

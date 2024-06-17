@@ -9,8 +9,9 @@ part of 'contract_step.dart';
 ContractStep _$ContractStepFromJson(Map<String, dynamic> json) => ContractStep(
       $enumDecode(_$ContractStatusEnumMap, json['status']),
       json['requestEnabled'] as bool,
-      ContractHistory.fromJson(
-          json['contractHistories'] as Map<String, dynamic>),
+      (json['contractHistories'] as List<dynamic>)
+          .map((e) => ContractHistory.fromJson(e as Map<String, dynamic>))
+          .toList(),
       DateTime.parse(json['createdAt'] as String),
     );
 
@@ -26,5 +27,5 @@ const _$ContractStatusEnumMap = {
   ContractStatus.roomCheck: 'ROOM_CHECK',
   ContractStatus.provisionalContract: 'PROVISIONAL_CONTRACT',
   ContractStatus.contract: 'CONTRACT',
-  ContractStatus.complete: 'COMPLETE',
+  ContractStatus.complete: 'COMPLETED',
 };

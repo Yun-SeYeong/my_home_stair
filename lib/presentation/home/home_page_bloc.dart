@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/dto/response/contract/contract_response.dart';
+import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
@@ -23,6 +24,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<LogoutEvent>(_onLogoutEvent);
     on<InitStateEvent>(_initStateEvent);
     on<LoadMoreContractsEvent>(_loadMoreContractsEvent);
+    on<LoadContractDetailEvent>(_loadContractDetailEvent);
   }
 
   Future<void> _initStateEvent(
@@ -67,6 +69,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     LogoutEvent event,
     Emitter<HomePageState> emit,
   ) {
+    _sharedPreferencesRepository.deleteTokenResponse();
+
     Navigator.pushNamedAndRemoveUntil(
         _context, LoginPage.route, (route) => false);
   }
@@ -75,6 +79,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     LoadMoreContractsEvent event,
     Emitter<HomePageState> emit,
   ) async {
+    if (state.contracts.length < defaultSize) return;
+
     final tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
 
     if (tokenResponse == null) {
@@ -105,6 +111,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       return error;
     });
   }
+
+  Future<void> _loadContractDetailEvent(
+    LoadContractDetailEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    Navigator.pushNamed(_context, ContractDetailPage.route, arguments: event.contractId);
+  }
 }
 
 sealed class HomePageEvent {}
@@ -120,6 +133,12 @@ class SelectBottomNavigationEvent extends HomePageEvent {
 class InitStateEvent extends HomePageEvent {}
 
 class LoadMoreContractsEvent extends HomePageEvent {}
+
+class LoadContractDetailEvent extends HomePageEvent {
+  final String contractId;
+
+  LoadContractDetailEvent(this.contractId);
+}
 
 class HomePageState extends Equatable {
   final HomeTab selectedTab;

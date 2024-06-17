@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:my_home_stair/dto/response/contract/contract_history_type.dart';
 import 'package:my_home_stair/dto/response/contract/contract_role.dart';
-import 'package:my_home_stair/dto/response/contract/contract_type.dart';
 
 part 'contract_history.g.dart';
 
@@ -10,13 +10,13 @@ class ContractHistory {
   final bool isDefault;
   final String title;
   final String description;
-  final ContractType type;
+  final ContractHistoryType type;
   final bool isCompleted;
-  final String fileURL;
-  final String textInput;
-  final ContractRole verifyRole;
+  final String? fileURL;
+  final String? textInput;
+  final ContractRole verifiedBy;
   final List<String> historyTags;
-  final DateTime createdAt;
+  final DateTime updatedAt;
 
   ContractHistory(
     this.id,
@@ -27,9 +27,9 @@ class ContractHistory {
     this.isCompleted,
     this.fileURL,
     this.textInput,
-    this.verifyRole,
+    this.verifiedBy,
     this.historyTags,
-    this.createdAt,
+    this.updatedAt,
   );
 
   factory ContractHistory.fromJson(Map<String, dynamic> json) =>
