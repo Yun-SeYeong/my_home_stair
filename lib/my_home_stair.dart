@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +14,9 @@ import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
 import 'package:nested/nested.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import 'presentation/contract/create_contract/create_contract_page.dart';
 import 'presentation/login/login_bloc.dart';
@@ -128,7 +133,7 @@ void _dependencyInjection() {
   // Dio 초기화
   getIt.registerSingleton<Dio>(Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.45.116:8080',
+      baseUrl: 'http://192.168.45.21:8080',
       headers: {
         'Content-Type': 'application/json',
       },

@@ -35,6 +35,12 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    context.read<ContractDetailPageBloc>().add(DisposeEvent());
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
@@ -211,7 +217,8 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
             },
             onChanged: (text) {
               context.read<ContractDetailPageBloc>().add(
-                  ContractHistoryInputTextChangedEvent(text, contractHistory.id));
+                  ContractHistoryInputTextChangedEvent(
+                      text, contractHistory.id));
             },
           )
         ];

@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
               bottom: 0,
               child: PageView(
                 controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ArchivePage(key: widget.key),
                   DashboardPage(key: widget.key, scrollController: _scrollController),

@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/dto/response/contract/contract_response.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
@@ -25,10 +28,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<InitStateEvent>(_initStateEvent);
     on<LoadMoreContractsEvent>(_loadMoreContractsEvent);
     on<LoadContractDetailEvent>(_loadContractDetailEvent);
+    on<SetClipboardEvent>(_setClipboardEvent);
   }
 
   Future<void> _initStateEvent(
-      InitStateEvent event, Emitter<HomePageState> emit) async {
+    InitStateEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
 
     if (tokenResponse == null) {
@@ -38,24 +44,20 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       return;
     }
 
-    emit(state.copy(isLoading: true));
+    emit(state.copy(isLoading: true, contracts: {}));
 
-    final contractsResponse = await _contractRepository
-        .getContracts(
-      tokenResponse.accessToken,
-      state.page,
-      defaultSize,
-    )
-        .catchError((error) {
+    try {
+      final contractsResponse = await _contractRepository.getContracts(
+          tokenResponse.accessToken, 0, defaultSize);
+
+      emit(state.copy(
+        contracts: contractsResponse.content.toSet(),
+        isLoading: false,
+        page: contractsResponse.pageable.pageNumber,
+      ));
+    } catch (e) {
       emit(state.copy(isLoading: false));
-      return error;
-    });
-
-    emit(state.copy(
-      contracts: contractsResponse.content.toSet(),
-      isLoading: false,
-      page: contractsResponse.pageable.pageNumber,
-    ));
+    }
   }
 
   void _onSelectBottomNavigationEvent(
@@ -91,33 +93,48 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     }
 
     emit(state.copy(isLoading: true));
-    await _contractRepository
-        .getContracts(
-      tokenResponse.accessToken,
-      state.page + 1,
-      defaultSize,
-    )
-    .then((contractsResponse) {
-      emit(state.copy(
-        contracts: state.contracts.union(contractsResponse.content.toSet()),
-        page: contractsResponse.content.length < defaultSize
-            ? state.page
-            : contractsResponse.pageable.pageNumber,
-        isLoading: false,
-      ));
-    })
-        .catchError((error) {
+
+    try {
+      await _contractRepository
+          .getContracts(tokenResponse.accessToken, state.page + 1, defaultSize)
+          .then((contractsResponse) {
+        emit(state.copy(
+            contracts: state.contracts.union(contractsResponse.content.toSet()),
+            page: contractsResponse.content.length < defaultSize
+                ? state.page
+                : contractsResponse.pageable.pageNumber,
+            isLoading: false));
+      });
+    } catch (e) {
       emit(state.copy(isLoading: false));
-      return error;
-    });
+    }
   }
 
   Future<void> _loadContractDetailEvent(
     LoadContractDetailEvent event,
     Emitter<HomePageState> emit,
   ) async {
-    Navigator.pushNamed(_context, ContractDetailPage.route, arguments: event.contractId);
+    Navigator.pushNamed(_context, ContractDetailPage.route,
+        arguments: event.contractId);
   }
+
+  Future<void> _setClipboardEvent(
+    SetClipboardEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    await Clipboard.setData(ClipboardData(text: event.text));
+    _showToast("초대 코드가 복사 되었습니다.");
+  }
+}
+
+void _showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    textColor: ColorStyles.primaryColor,
+    backgroundColor: Colors.white,
+    gravity: ToastGravity.BOTTOM,
+    toastLength: Toast.LENGTH_SHORT,
+  );
 }
 
 sealed class HomePageEvent {}
@@ -138,6 +155,12 @@ class LoadContractDetailEvent extends HomePageEvent {
   final String contractId;
 
   LoadContractDetailEvent(this.contractId);
+}
+
+class SetClipboardEvent extends HomePageEvent {
+  final String text;
+
+  SetClipboardEvent(this.text);
 }
 
 class HomePageState extends Equatable {

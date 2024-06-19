@@ -6,10 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_home_stair/dto/request/contract/contract_history_input_text_request.dart';
+import 'package:my_home_stair/dto/response/auth/token_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 class ContractDetailPageBloc
     extends Bloc<ContractDetailPageEvent, ContractDetailPageState> {
@@ -28,6 +30,34 @@ class ContractDetailPageBloc
     on<ContractHistoryInputTextEvent>(_contractHistoryInputText);
     on<ContractHistoryInputTextChangedEvent>(
         _onContractHistoryInputTextChanged);
+    on<DisposeEvent>(_disposeEvent);
+    on<RefreshEvent>(_refreshEvent);
+  }
+
+  Future<void> _refreshEvent(
+    RefreshEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+    try {
+      final contractDetailResponse = await _contractRepository.getContract(
+          tokenResponse.accessToken, event.contractId);
+      emit(state.copy(
+        contractDetail: contractDetailResponse,
+        isLoading: false,
+      ));
+    } catch (e) {
+      emit(state.copy(isLoading: false));
+    }
   }
 
   Future<void> _initStateEvent(
@@ -43,18 +73,27 @@ class ContractDetailPageBloc
       return;
     }
 
-    emit(state.copy(isLoading: true));
+    var webSocket = WebSocket(
+      Uri.parse('ws://192.168.45.21:8080/contract-event/${event.contractId}'),
+      headers: {'Authorization': tokenResponse.accessToken},
+    )..messages.listen((message) {
+        add(RefreshEvent(event.contractId));
+      });
 
-    try {
-      final contractDetailResponse = await _contractRepository.getContract(
-          tokenResponse.accessToken, event.contractId);
-      emit(state.copy(
-        contractDetail: contractDetailResponse,
-        isLoading: false,
-      ));
-    } catch (e) {
-      emit(state.copy(isLoading: false));
+    await webSocket.connection.firstWhere((state) => state is Connected);
+
+    add(RefreshEvent(event.contractId));
+  }
+
+  Future<void> _disposeEvent(
+    DisposeEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    final webSocket = state.webSocket;
+    if (webSocket != null) {
+      webSocket.close();
     }
+    emit(state.copy(webSocket: null));
   }
 
   Future<void> _contractHistoryCheck(
@@ -162,11 +201,18 @@ class ContractDetailPageBloc
 
 sealed class ContractDetailPageEvent {}
 
+class RefreshEvent extends ContractDetailPageEvent {
+  final String contractId;
+
+  RefreshEvent(this.contractId);
+}
+
 class InitStateEvent extends ContractDetailPageEvent {
   final String contractId;
 
   InitStateEvent(this.contractId);
 }
+class DisposeEvent extends ContractDetailPageEvent {}
 
 class ContractHistoryCheckEvent extends ContractDetailPageEvent {
   final String historyId;
@@ -197,22 +243,26 @@ class ContractDetailPageState extends Equatable {
   final ContractDetailResponse? contractDetail;
   final bool isLoading;
   final Map<String, String> historyInputTextMap;
+  final WebSocket? webSocket;
 
   const ContractDetailPageState({
     this.contractDetail,
     this.isLoading = false,
     this.historyInputTextMap = const {},
+    this.webSocket,
   });
 
   ContractDetailPageState copy({
     ContractDetailResponse? contractDetail,
     bool? isLoading,
     Map<String, String>? historyInputTextMap,
+    WebSocket? webSocket,
   }) {
     return ContractDetailPageState(
       contractDetail: contractDetail ?? this.contractDetail,
       isLoading: isLoading ?? this.isLoading,
       historyInputTextMap: historyInputTextMap ?? this.historyInputTextMap,
+      webSocket: webSocket ?? this.webSocket,
     );
   }
 

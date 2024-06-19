@@ -9,7 +9,9 @@ enum ContractStatus {
   @JsonValue('CONTRACT')
   contract("실계약"),
   @JsonValue('COMPLETED')
-  complete("완료");
+  complete("완료"),
+  @JsonValue('EXPIRED')
+  expired("만료");
 
   final String name;
 

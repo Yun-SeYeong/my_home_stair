@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:my_home_stair/components/color_styles.dart';
+import 'package:my_home_stair/dto/response/contract/contract_status.dart';
 
 class StatusBar extends StatelessWidget {
   final String label;
@@ -37,125 +39,135 @@ class StatusBar extends StatelessWidget {
 
 class ContractStatusWidget extends StatelessWidget {
   final String title;
-  final String statusNow;
+  final ContractStatus status;
   final String address;
-  final Function onButton;
+  final Function onClicked;
+  final Function onCopy;
 
   const ContractStatusWidget({
     super.key,
     required this.title,
-    required this.statusNow,
+    required this.status,
     required this.address,
-    required this.onButton(),
+    required this.onClicked,
+    required this.onCopy,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05), // 그림자의 색상 및 투명도
-            offset: const Offset(0, 0), // x: 0, y: 0
-            blurRadius: 20, // blur 반경
-            spreadRadius: 0, // spread 반경
-          ),
-        ],
-      ),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return InkWell(
+      onTap: () {
+        onClicked();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05), // 그림자의 색상 및 투명도
+              offset: const Offset(4, 4), // x: 0, y: 0
+              blurRadius: 10, // blur 반경
+              spreadRadius: 1, // spread 반경
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      title,
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0E2288),
+                    height: 1.25,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(width: 12.0),
+                Container(
+                  width: 48,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: ColorStyles.primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      status.name,
                       style: const TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Inter',
-                          color: Color(0xFF0E2288)),
-                    ),
-                    const SizedBox(width: 12.0),
-                    Container(
-                      margin: const EdgeInsets.only(top: 4.0),
-                      width: 48,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF0E2288),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          statusNow,
-                          style: const TextStyle(
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Inter',
-                              color: Color(0xFFFFFFFF)),
-                        ),
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    const SizedBox(width: 200.0),
-                    InkWell(
-                      onTap: () {
-                        onButton();
-                      },
-                      child: SvgPicture.asset(
-                        'images/External.svg', // 우측에 위치한 공통 아이콘
-                        semanticsLabel: 'Expand_right',
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 13.0),
-                Text(address,
-                    style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Inter',
-                        color: Color(0xFF8B8B8B)),
+                Flexible(flex: 1, child: Container()),
+                InkWell(
+                  onTap: () {
+                    onCopy();
+                  },
+                  child: SvgPicture.asset(
+                    'images/External.svg', // 우측에 위치한 공통 아이콘
+                    semanticsLabel: 'Expand_right',
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Text(
+              address,
+              style: const TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+                color: ColorStyles.greyColor,
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            Stack(
+              children: [
+                Positioned(
+                  top: 22.5,
+                  left: 10.0,
+                  right: 15.0,
+                  child: Container(
+                    height: 1.0,
+                    color: ColorStyles.primaryColor,
+                  ),
                 ),
-                const SizedBox(height: 30.0), // 위젯들과 상태바 사이의 간격
-                Stack(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Positioned(
-                      top: 22.5,
-                      left: 10.0,
-                      right: 15.0,
-                      child: Container(
-                        height: 1.0,
-                        color: Color(0xFF0E2288),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        StatusBar(label: "방확인", isActive: statusNow == "방확인"? true:false),
-                        const SizedBox(width: 48.0),
-                        StatusBar(label: "가계약", isActive: statusNow == "가계약"? true:false),
-                        const SizedBox(width: 48.0),
-                        StatusBar(label: "실계약", isActive: statusNow == "실계약"? true:false),
-                        const SizedBox(width: 48.0),
-                        StatusBar(label: "계약완료", isActive: statusNow == "계약완료"? true:false),
-                        const SizedBox(width: 48.0),
-                        StatusBar(label: "계약만료", isActive: statusNow == "계약만료"? true:false),
-                      ],
-                    ),
+                    StatusBar(
+                        label: "방확인",
+                        isActive: ContractStatus.roomCheck.index <= status.index),
+                    StatusBar(
+                        label: "가계약",
+                        isActive: ContractStatus.provisionalContract.index <=
+                            status.index),
+                    StatusBar(
+                        label: "실계약",
+                        isActive: ContractStatus.contract.index <= status.index),
+                    StatusBar(
+                        label: "계약완료",
+                        isActive: ContractStatus.complete.index <= status.index),
+                    StatusBar(
+                        label: "계약만료",
+                        isActive: ContractStatus.expired.index <= status.index),
                   ],
                 ),
               ],
             ),
-          ]),
+          ],
+        ),
+      ),
     );
   }
 }
-
-

@@ -15,9 +15,11 @@ class CreateContractPageBloc
   final ContractRepository _contractRepository;
   final SharedPreferencesRepository _sharedPreferencesRepository;
 
-  CreateContractPageBloc(this._context, this._contractRepository,
-      this._sharedPreferencesRepository)
-      : super(const CreateContractPageState()) {
+  CreateContractPageBloc(
+    this._context,
+    this._contractRepository,
+    this._sharedPreferencesRepository,
+  ) : super(const CreateContractPageState()) {
     on<NextButtonClickEvent>(_onNextButtonClicked);
     on<BackEvent>(_onBack);
     on<SelectIsNewContractEvent>(_isNewContractSelected);
@@ -61,28 +63,32 @@ class CreateContractPageBloc
           _showToast('상세주소를 입력해주세요.');
           return;
         }
+
         if (state.isLoading) {
           return;
         }
 
         emit(state.copy(isLoading: true));
 
-        await _contractRepository
-            .createContract(
-          tokenResponse.accessToken,
-          ContractRequest(
-            address: state.address,
-            addressDetail: state.addressDetail,
-            contractRole: state.contractRole,
-          ),
-        )
-            .then((response) {
-          if (!_context.mounted) throw Exception('Context is not mounted');
-          Navigator.pop(_context);
-        }).catchError((error) {
-          print(error);
+        try {
+          await _contractRepository.createContract(
+            tokenResponse.accessToken,
+            ContractRequest(
+              address: state.address,
+              addressDetail: state.addressDetail,
+              contractRole: state.contractRole,
+            ),
+          );
+        } catch (e) {
+          _showToast('계약을 생성하는데 실패했습니다.');
           emit(state.copy(isLoading: false));
-        });
+          return;
+        }
+        if (!_context.mounted) {
+          throw Exception('Context is not mounted');
+        } else {
+          Navigator.pop(_context);
+        }
         break;
       case 4:
         if (state.isLoading) {
@@ -91,18 +97,27 @@ class CreateContractPageBloc
 
         emit(state.copy(isLoading: true));
 
-        await _contractRepository.joinContract(
-          tokenResponse.accessToken,
-          JoinContractRequest(
-            contractId: state.joinCode,
-            contractRole: state.contractRole,
-          ),
-        );
+        try {
+          await _contractRepository.joinContract(
+            tokenResponse.accessToken,
+            JoinContractRequest(
+              contractId: state.joinCode,
+              contractRole: state.contractRole,
+            ),
+          );
+        } catch (e) {
+          _showToast('코드를 다시 확인해주세요.');
+          emit(state.copy(isLoading: false));
+          return;
+        }
 
         emit(state.copy(isLoading: false));
 
-        if (!_context.mounted) throw Exception('Context is not mounted');
-        Navigator.pop(_context);
+        if (!_context.mounted) {
+          throw Exception('Context is not mounted');
+        } else {
+          Navigator.pop(_context);
+        }
         break;
     }
   }
