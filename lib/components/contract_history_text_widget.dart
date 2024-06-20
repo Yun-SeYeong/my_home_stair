@@ -59,19 +59,6 @@ class ContractHistoryTextWidget extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Inter'),
                     ),
-                    if (status == ContractHistoryWidgetStatus.accepted &&
-                        currentTextInput != null) ...[
-                      const SizedBox(height: 10.0),
-                      Text(
-                        currentTextInput,
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Inter',
-                          color: ColorStyles.primaryColor,
-                        ),
-                      ),
-                    ]
                   ],
                 ),
                 if (status == ContractHistoryWidgetStatus.accepted)
@@ -88,6 +75,22 @@ class ContractHistoryTextWidget extends StatelessWidget {
                 else
                   Container()
               ]),
+          if (status == ContractHistoryWidgetStatus.accepted &&
+              currentTextInput != null) ...[
+            const SizedBox(height: 10.0),
+            SizedBox(
+              child: Text(
+                currentTextInput,
+                softWrap: true,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                  color: ColorStyles.primaryColor,
+                ),
+              ),
+            ),
+          ],
           if (status == ContractHistoryWidgetStatus.request) ...[
             Text(
               description,

@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
@@ -14,9 +13,6 @@ import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
 import 'package:nested/nested.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_client/web_socket_client.dart';
 
 import 'presentation/contract/create_contract/create_contract_page.dart';
 import 'presentation/login/login_bloc.dart';
@@ -25,10 +21,17 @@ import 'presentation/signup/sign_up_bloc.dart';
 import 'presentation/signup/sign_up_page.dart';
 import 'presentation/splash/splash_page.dart';
 import 'presentation/splash/splash_page_bloc.dart';
+import 'repository/file_download_repository.dart';
 
 final getIt = GetIt.instance;
+const String serverHost = '192.168.45.186:8080';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+    debug: true,
+    ignoreSsl: true,
+  );
   _dependencyInjection();
   runApp(const MyHomeStair());
 }
@@ -124,6 +127,7 @@ List<SingleChildWidget> _initBlocs() {
         context,
         getIt<SharedPreferencesRepository>(),
         getIt<ContractRepository>(),
+        getIt<FileRepository>(),
       ),
     )
   ];
@@ -133,7 +137,7 @@ void _dependencyInjection() {
   // Dio 초기화
   getIt.registerSingleton<Dio>(Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.45.21:8080',
+      baseUrl: 'http://$serverHost',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -145,4 +149,5 @@ void _dependencyInjection() {
   getIt.registerSingleton(ContractRepository(getIt<Dio>()));
   getIt.registerSingleton(SharedPreferencesRepository());
   getIt.registerSingleton(_initBlocs(), instanceName: 'blocs');
+  getIt.registerSingleton(FileRepository());
 }

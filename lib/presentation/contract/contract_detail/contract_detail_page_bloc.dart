@@ -1,16 +1,22 @@
 import 'dart:collection';
 import 'dart:io';
-
+import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/dto/request/contract/contract_history_input_text_request.dart';
 import 'package:my_home_stair/dto/response/auth/token_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
+import 'package:my_home_stair/my_home_stair.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
+import 'package:my_home_stair/repository/file_download_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
 class ContractDetailPageBloc
@@ -18,11 +24,13 @@ class ContractDetailPageBloc
   final BuildContext _context;
   final SharedPreferencesRepository _sharedPreferencesRepository;
   final ContractRepository _contractRepository;
+  final FileRepository _fileRepository;
 
   ContractDetailPageBloc(
     this._context,
     this._sharedPreferencesRepository,
     this._contractRepository,
+    this._fileRepository,
   ) : super(const ContractDetailPageState()) {
     on<InitStateEvent>(_initStateEvent);
     on<ContractHistoryCheckEvent>(_contractHistoryCheck);
@@ -32,6 +40,8 @@ class ContractDetailPageBloc
         _onContractHistoryInputTextChanged);
     on<DisposeEvent>(_disposeEvent);
     on<RefreshEvent>(_refreshEvent);
+    on<DownloadFileEvent>(_downloadFileEvent);
+    on<SetClipboardEvent>(_setClipboardEvent);
   }
 
   Future<void> _refreshEvent(
@@ -74,7 +84,7 @@ class ContractDetailPageBloc
     }
 
     var webSocket = WebSocket(
-      Uri.parse('ws://192.168.45.21:8080/contract-event/${event.contractId}'),
+      Uri.parse('ws://$serverHost/contract-event/${event.contractId}'),
       headers: {'Authorization': tokenResponse.accessToken},
     )..messages.listen((message) {
         add(RefreshEvent(event.contractId));
@@ -197,6 +207,55 @@ class ContractDetailPageBloc
 
     emit(state.copy(historyInputTextMap: historyInputTextMap));
   }
+
+  Future<void> _downloadFileEvent(
+    DownloadFileEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    final contractDetail = state.contractDetail;
+    if (contractDetail == null) return;
+
+    var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+
+    try {
+      await _fileRepository.downloadFile(
+          tokenResponse.accessToken,
+          contractDetail.id,
+          event.historyId,
+          (await getDownloadDirectory()).path);
+    } catch (e) {
+      print(e);
+    }
+
+    emit(state.copy(isLoading: false));
+  }
+
+  Future<void> _setClipboardEvent(
+    SetClipboardEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    await Clipboard.setData(ClipboardData(text: event.text));
+    _showToast("복사 되었습니다.");
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      textColor: ColorStyles.primaryColor,
+      backgroundColor: Colors.white,
+      gravity: ToastGravity.BOTTOM,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+  }
 }
 
 sealed class ContractDetailPageEvent {}
@@ -212,6 +271,7 @@ class InitStateEvent extends ContractDetailPageEvent {
 
   InitStateEvent(this.contractId);
 }
+
 class DisposeEvent extends ContractDetailPageEvent {}
 
 class ContractHistoryCheckEvent extends ContractDetailPageEvent {
@@ -237,6 +297,18 @@ class ContractHistoryInputTextChangedEvent extends ContractDetailPageEvent {
   final String text;
 
   ContractHistoryInputTextChangedEvent(this.text, this.historyId);
+}
+
+class DownloadFileEvent extends ContractDetailPageEvent {
+  final String historyId;
+
+  DownloadFileEvent(this.historyId);
+}
+
+class SetClipboardEvent extends ContractDetailPageEvent {
+  final String text;
+
+  SetClipboardEvent(this.text);
 }
 
 class ContractDetailPageState extends Equatable {

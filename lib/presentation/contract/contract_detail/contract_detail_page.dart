@@ -124,7 +124,7 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
               ),
             ),
           ),
-          const SizedBox(height: 120),
+          const SizedBox(height: 540),
         ],
       ),
     );
@@ -193,7 +193,11 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
             description: contractHistory.description,
             date: contractHistory.updatedAt,
             status: _getHistoryWidgetStatus(myRole, contractHistory),
-            onDownload: () {},
+            onDownload: () {
+              context
+                  .read<ContractDetailPageBloc>()
+                  .add(DownloadFileEvent(contractHistory.id));
+            },
             onConfirm: () {
               context
                   .read<ContractDetailPageBloc>()
@@ -209,7 +213,11 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
             description: contractHistory.description,
             textInput: contractHistory.textInput,
             status: _getHistoryWidgetStatus(myRole, contractHistory),
-            onCopy: () {},
+            onCopy: () {
+              context
+                  .read<ContractDetailPageBloc>()
+                  .add(SetClipboardEvent(contractHistory.description));
+            },
             onConfirm: () {
               context
                   .read<ContractDetailPageBloc>()
