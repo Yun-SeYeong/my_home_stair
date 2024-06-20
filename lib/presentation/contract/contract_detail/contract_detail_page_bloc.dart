@@ -9,16 +9,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/dto/request/contract/contract_history_input_text_request.dart';
-import 'package:my_home_stair/dto/response/auth/token_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
 import 'package:my_home_stair/my_home_stair.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/file_download_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_client/web_socket_client.dart';
 
+// BLOC
 class ContractDetailPageBloc
     extends Bloc<ContractDetailPageEvent, ContractDetailPageState> {
   final BuildContext _context;
@@ -258,6 +257,7 @@ class ContractDetailPageBloc
   }
 }
 
+// BLOC 이벤트
 sealed class ContractDetailPageEvent {}
 
 class RefreshEvent extends ContractDetailPageEvent {
@@ -311,6 +311,7 @@ class SetClipboardEvent extends ContractDetailPageEvent {
   SetClipboardEvent(this.text);
 }
 
+// BLOC 상태
 class ContractDetailPageState extends Equatable {
   final ContractDetailResponse? contractDetail;
   final bool isLoading;
@@ -327,6 +328,7 @@ class ContractDetailPageState extends Equatable {
   ContractDetailPageState copy({
     ContractDetailResponse? contractDetail,
     bool? isLoading,
+    bool? isRequestMenuOpen,
     Map<String, String>? historyInputTextMap,
     WebSocket? webSocket,
   }) {
