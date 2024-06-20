@@ -28,4 +28,5 @@ const _$ContractStatusEnumMap = {
   ContractStatus.provisionalContract: 'PROVISIONAL_CONTRACT',
   ContractStatus.contract: 'CONTRACT',
   ContractStatus.complete: 'COMPLETED',
+  ContractStatus.expired: 'EXPIRED',
 };

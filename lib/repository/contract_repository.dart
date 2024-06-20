@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:my_home_stair/dto/request/contract/contract_history_input_text_request.dart';
 import 'package:my_home_stair/dto/request/contract/contract_request.dart';
+import 'package:my_home_stair/dto/request/contract/create_file_upload_history_request.dart';
+import 'package:my_home_stair/dto/request/contract/create_special_contract_request.dart';
 import 'package:my_home_stair/dto/request/contract/join_contract_request.dart';
 import 'package:my_home_stair/dto/response/common/page_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
+import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
 import 'package:retrofit/http.dart';
 
 import '../dto/response/contract/contract_response.dart';
@@ -62,5 +65,17 @@ abstract class ContractRepository {
     @Path('contractId') String contractId,
     @Path('historyId') String historyId,
     @MultiPart() @Part() File file,
+  );
+
+  @POST('/createFileUploadHistory')
+  Future<void> createFileUploadHistory(
+    @Header('Authorization') String authorization,
+    @Body() CreateFileUploadHistoryRequest createFileUploadHistoryRequest,
+  );
+
+  @POST('/createSpecialContract')
+  Future<void> createSpecialContract(
+    @Header('Authorization') String authorization,
+    @Body() CreateSpecialContractRequest createSpecialContractRequest,
   );
 }

@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/dto/request/contract/contract_history_input_text_request.dart';
+import 'package:my_home_stair/dto/request/contract/create_file_upload_history_request.dart';
+import 'package:my_home_stair/dto/request/contract/create_special_contract_request.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
 import 'package:my_home_stair/my_home_stair.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
@@ -41,6 +43,12 @@ class ContractDetailPageBloc
     on<RefreshEvent>(_refreshEvent);
     on<DownloadFileEvent>(_downloadFileEvent);
     on<SetClipboardEvent>(_setClipboardEvent);
+    on<FileTypeChangedEvent>(_fileTypeChangedEvent);
+    on<FileDescriptionChangedEvent>(_fileDescriptionChangedEvent);
+    on<SpecialContractDescriptionChangedEvent>(
+        _specialContractDescriptionChangedEvent);
+    on<CreateFileUploadHistoryEvent>(_createFileUploadHistoryEvent);
+    on<CreateSpecialContractHistoryEvent>(_createSpecialContractHistoryEvent);
   }
 
   Future<void> _refreshEvent(
@@ -86,6 +94,7 @@ class ContractDetailPageBloc
       Uri.parse('ws://$serverHost/contract-event/${event.contractId}'),
       headers: {'Authorization': tokenResponse.accessToken},
     )..messages.listen((message) {
+        sleep(const Duration(milliseconds: 200));
         add(RefreshEvent(event.contractId));
       });
 
@@ -246,6 +255,86 @@ class ContractDetailPageBloc
     _showToast("복사 되었습니다.");
   }
 
+  Future<void> _fileTypeChangedEvent(
+    FileTypeChangedEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    emit(state.copy(fileType: event.fileType));
+  }
+
+  Future<void> _fileDescriptionChangedEvent(
+    FileDescriptionChangedEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    emit(state.copy(fileDescription: event.fileDescription));
+  }
+
+  Future<void> _specialContractDescriptionChangedEvent(
+    SpecialContractDescriptionChangedEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    emit(state.copy(
+        specialContractDescription: event.specialContractDescription));
+  }
+
+  Future<void> _createFileUploadHistoryEvent(
+    CreateFileUploadHistoryEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    final contractDetail = state.contractDetail;
+    if (contractDetail == null) return;
+
+    var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+
+    await _contractRepository.createFileUploadHistory(
+      tokenResponse.accessToken,
+      CreateFileUploadHistoryRequest(
+        contractId: contractDetail.id,
+        fileType: state.fileType,
+        description: state.fileDescription,
+      ),
+    );
+
+    emit(state.copy(isLoading: false));
+  }
+
+  Future<void> _createSpecialContractHistoryEvent(
+    CreateSpecialContractHistoryEvent event,
+    Emitter<ContractDetailPageState> emit,
+  ) async {
+    final contractDetail = state.contractDetail;
+    if (contractDetail == null) return;
+
+    var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+
+    await _contractRepository.createSpecialContract(
+        tokenResponse.accessToken,
+        CreateSpecialContractRequest(
+          contractId: contractDetail.id,
+          description: state.specialContractDescription,
+        ));
+
+    emit(state.copy(isLoading: false));
+  }
+
   void _showToast(String message) {
     Fluttertoast.showToast(
       msg: message,
@@ -311,18 +400,46 @@ class SetClipboardEvent extends ContractDetailPageEvent {
   SetClipboardEvent(this.text);
 }
 
+class FileTypeChangedEvent extends ContractDetailPageEvent {
+  final String fileType;
+
+  FileTypeChangedEvent(this.fileType);
+}
+
+class FileDescriptionChangedEvent extends ContractDetailPageEvent {
+  final String fileDescription;
+
+  FileDescriptionChangedEvent(this.fileDescription);
+}
+
+class SpecialContractDescriptionChangedEvent extends ContractDetailPageEvent {
+  final String specialContractDescription;
+
+  SpecialContractDescriptionChangedEvent(this.specialContractDescription);
+}
+
+class CreateFileUploadHistoryEvent extends ContractDetailPageEvent {}
+
+class CreateSpecialContractHistoryEvent extends ContractDetailPageEvent {}
+
 // BLOC 상태
 class ContractDetailPageState extends Equatable {
   final ContractDetailResponse? contractDetail;
   final bool isLoading;
   final Map<String, String> historyInputTextMap;
   final WebSocket? webSocket;
+  final String fileType;
+  final String fileDescription;
+  final String specialContractDescription;
 
   const ContractDetailPageState({
     this.contractDetail,
     this.isLoading = false,
     this.historyInputTextMap = const {},
     this.webSocket,
+    this.fileType = '',
+    this.fileDescription = '',
+    this.specialContractDescription = '',
   });
 
   ContractDetailPageState copy({
@@ -331,16 +448,29 @@ class ContractDetailPageState extends Equatable {
     bool? isRequestMenuOpen,
     Map<String, String>? historyInputTextMap,
     WebSocket? webSocket,
+    String? fileType,
+    String? fileDescription,
+    String? specialContractDescription,
   }) {
     return ContractDetailPageState(
       contractDetail: contractDetail ?? this.contractDetail,
       isLoading: isLoading ?? this.isLoading,
       historyInputTextMap: historyInputTextMap ?? this.historyInputTextMap,
       webSocket: webSocket ?? this.webSocket,
+      fileType: fileType ?? this.fileType,
+      fileDescription: fileDescription ?? this.fileDescription,
+      specialContractDescription:
+          specialContractDescription ?? this.specialContractDescription,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [contractDetail, isLoading, ...historyInputTextMap.values];
+  List<Object?> get props => [
+        contractDetail,
+        isLoading,
+        ...historyInputTextMap.values,
+        fileType,
+        fileDescription,
+        specialContractDescription,
+      ];
 }

@@ -147,49 +147,76 @@ class _ContractDetailPageState extends State<ContractDetailPage>
           else if (_requestMenuStatus == RequestMenuStatus.fileUploadRequest)
             _requestFileUploadWidget(
               _openMenu,
-              () {},
-              (text) {},
-              (text) {},
+              () {
+                context
+                    .read<ContractDetailPageBloc>()
+                    .add(CreateFileUploadHistoryEvent());
+                setState(() {
+                  _requestMenuStatus = RequestMenuStatus.menuClosed;
+                });
+              },
+              (text) {
+                context
+                    .read<ContractDetailPageBloc>()
+                    .add(FileTypeChangedEvent(text));
+              },
+              (text) {
+                context
+                    .read<ContractDetailPageBloc>()
+                    .add(FileDescriptionChangedEvent(text));
+              },
             )
           else if (_requestMenuStatus ==
               RequestMenuStatus.contractSpecialRequest)
             _requestSpecialContractWidget(
               _openMenu,
-              () {},
-              (text) {},
+              () {
+                context
+                    .read<ContractDetailPageBloc>()
+                    .add(CreateSpecialContractHistoryEvent());
+                setState(() {
+                  _requestMenuStatus = RequestMenuStatus.menuClosed;
+                });
+              },
+              (text) {
+                context
+                    .read<ContractDetailPageBloc>()
+                    .add(SpecialContractDescriptionChangedEvent(text));
+              },
             ),
           const SizedBox(height: 20),
-          Center(
-            child: InkWell(
-              onTap: () {
-                if (_requestMenuStatus == RequestMenuStatus.menuClosed) {
-                  _openMenu();
-                } else {
-                  _closeMenu();
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.all(9),
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                    color: ColorStyles.primaryColor, shape: BoxShape.circle),
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _controller.value,
-                      child: child,
-                    );
-                  },
-                  child: SvgPicture.asset(
-                    'images/plus.svg',
-                    height: 16,
+          if (contractDetail.contractRole == ContractRole.lessee)
+            Center(
+              child: InkWell(
+                onTap: () {
+                  if (_requestMenuStatus == RequestMenuStatus.menuClosed) {
+                    _openMenu();
+                  } else {
+                    _closeMenu();
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(9),
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                      color: ColorStyles.primaryColor, shape: BoxShape.circle),
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _controller.value,
+                        child: child,
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      'images/plus.svg',
+                      height: 16,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           const SizedBox(height: 540),
         ],
       ),
@@ -225,8 +252,8 @@ class _ContractDetailPageState extends State<ContractDetailPage>
   Widget _requestFileUploadWidget(
     Function onBack,
     Function onRequest,
-    Function onFileTypeChanged,
-    Function onRequestChanged,
+    void Function(String) onFileTypeChanged,
+    void Function(String) onRequestChanged,
   ) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -271,7 +298,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
               )),
           const SizedBox(height: 20),
           TextField(
-            onChanged: (text) {},
+            onChanged: onFileTypeChanged,
             decoration: const InputDecoration(
               label: Text(
                 '파일 종류',
@@ -294,7 +321,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
           ),
           const SizedBox(height: 20),
           TextField(
-            onChanged: (text) {},
+            onChanged: onRequestChanged,
             decoration: const InputDecoration(
               label: Text(
                 '요청사항',
@@ -318,7 +345,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
           const SizedBox(height: 20),
           MyHouseStairOutlineButton(
             text: '확인',
-            onPressed: () {},
+            onPressed: onRequest,
           ),
         ],
       ),
@@ -328,7 +355,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
   Widget _requestSpecialContractWidget(
     Function onBack,
     Function onRequest,
-    Function onDescriptionChanged,
+    void Function(String) onDescriptionChanged,
   ) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -373,7 +400,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
               )),
           const SizedBox(height: 20),
           TextField(
-            onChanged: (text) {},
+            onChanged: onDescriptionChanged,
             decoration: const InputDecoration(
               label: Text(
                 '요청사항',
@@ -397,7 +424,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
           const SizedBox(height: 20),
           MyHouseStairOutlineButton(
             text: '확인',
-            onPressed: () {},
+            onPressed: onRequest,
           ),
         ],
       ),
