@@ -1,16 +1,20 @@
 import 'dart:collection';
 
+import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_home_stair/components/color_styles.dart';
+import 'package:my_home_stair/dto/response/contract/archive_file_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_response.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
+import 'package:my_home_stair/repository/file_download_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import 'home_page.dart';
 
@@ -18,12 +22,14 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   final BuildContext _context;
   final ContractRepository _contractRepository;
   final SharedPreferencesRepository _sharedPreferencesRepository;
+  final FileRepository _fileRepository;
   final int defaultSize = 10;
 
   HomePageBloc(
     this._context,
     this._contractRepository,
     this._sharedPreferencesRepository,
+    this._fileRepository,
   ) : super(const HomePageState()) {
     on<SelectBottomNavigationEvent>(_onSelectBottomNavigationEvent);
     on<LogoutEvent>(_onLogoutEvent);
@@ -31,6 +37,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<LoadMoreContractsEvent>(_loadMoreContractsEvent);
     on<LoadContractDetailEvent>(_loadContractDetailEvent);
     on<SetClipboardEvent>(_setClipboardEvent);
+    on<KeywordChangedEvent>(_keywordChangedEvent,
+        transformer: (events, mapper) {
+      return events
+          .debounce(const Duration(milliseconds: 10))
+          .switchMap(mapper);
+    });
+    on<DownloadArchiveFileEvent>(_downloadArchiveFileEvent);
   }
 
   Future<void> _initStateEvent(
@@ -127,6 +140,71 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     await Clipboard.setData(ClipboardData(text: event.text));
     _showToast("초대 코드가 복사 되었습니다.");
   }
+
+  Future<void> _keywordChangedEvent(
+    KeywordChangedEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    if (event.keyword.isEmpty) {
+      emit(state.copy(archiveFileResponse: []));
+      return;
+    }
+
+    final tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+
+    try {
+      var response = await _contractRepository.getContractFileHistories(
+        tokenResponse.accessToken,
+        event.keyword,
+      );
+      emit(state.copy(
+        archiveFileResponse: response.content,
+        isLoading: false,
+      ));
+    } catch (e) {
+      emit(state.copy(isLoading: false));
+      return;
+    }
+  }
+
+  Future<void> _downloadArchiveFileEvent(
+    DownloadArchiveFileEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    final tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
+
+    if (tokenResponse == null) {
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
+      return;
+    }
+
+    emit(state.copy(isLoading: true));
+
+    try {
+      await _fileRepository.downloadFile(
+        tokenResponse.accessToken,
+        event.contractId,
+        event.historyId,
+        (await getDownloadDirectory()).path,
+      );
+      _showToast('다운로드가 완료되었습니다.');
+      emit(state.copy(isLoading: false));
+    } catch (e) {
+      _showToast('다운로드에 실패했습니다.');
+      emit(state.copy(isLoading: false));
+    }
+  }
 }
 
 void _showToast(String message) {
@@ -165,33 +243,55 @@ class SetClipboardEvent extends HomePageEvent {
   SetClipboardEvent(this.text);
 }
 
+class KeywordChangedEvent extends HomePageEvent {
+  final String keyword;
+
+  KeywordChangedEvent(this.keyword);
+}
+
+class DownloadArchiveFileEvent extends HomePageEvent {
+  final String contractId;
+  final String historyId;
+
+  DownloadArchiveFileEvent(this.contractId, this.historyId);
+}
+
 class HomePageState extends Equatable {
   final HomeTab selectedTab;
   final Set<ContractResponse> contracts;
+  final List<ArchiveFileResponse> archiveFileResponse;
   final int page;
   final bool isLoading;
 
   const HomePageState({
     this.selectedTab = HomeTab.home,
     this.contracts = const {},
+    this.archiveFileResponse = const [],
     this.page = 0,
     this.isLoading = false,
   });
 
-  HomePageState copy({
-    HomeTab? selectedTab,
-    Set<ContractResponse>? contracts,
-    int? page,
-    bool? isLoading,
-  }) {
+  HomePageState copy(
+      {HomeTab? selectedTab,
+      Set<ContractResponse>? contracts,
+      List<ArchiveFileResponse>? archiveFileResponse,
+      int? page,
+      bool? isLoading}) {
     return HomePageState(
       selectedTab: selectedTab ?? this.selectedTab,
       contracts: contracts ?? this.contracts,
+      archiveFileResponse: archiveFileResponse ?? this.archiveFileResponse,
       page: page ?? this.page,
       isLoading: isLoading ?? this.isLoading,
     );
   }
 
   @override
-  List<Object?> get props => [selectedTab, ...contracts, page, isLoading];
+  List<Object?> get props => [
+        selectedTab,
+        ...contracts,
+        page,
+        isLoading,
+        ...archiveFileResponse,
+      ];
 }

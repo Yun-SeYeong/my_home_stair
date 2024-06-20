@@ -240,11 +240,12 @@ class ContractDetailPageBloc
           contractDetail.id,
           event.historyId,
           (await getDownloadDirectory()).path);
+      _showToast('다운로드가 완료되었습니다.');
+      emit(state.copy(isLoading: false));
     } catch (e) {
-      print(e);
+      _showToast('다운로드에 실패했습니다.');
+      emit(state.copy(isLoading: false));
     }
-
-    emit(state.copy(isLoading: false));
   }
 
   Future<void> _setClipboardEvent(

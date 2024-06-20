@@ -14,6 +14,7 @@ import 'package:my_home_stair/dto/response/contract/contract_history.dart';
 import 'package:my_home_stair/dto/response/contract/contract_history_type.dart';
 import 'package:my_home_stair/dto/response/contract/contract_history_widget_status.dart';
 import 'package:my_home_stair/dto/response/contract/contract_role.dart';
+import 'package:my_home_stair/dto/response/contract/contract_status.dart';
 import 'package:my_home_stair/dto/response/contract/contract_step.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
 
@@ -185,7 +186,8 @@ class _ContractDetailPageState extends State<ContractDetailPage>
               },
             ),
           const SizedBox(height: 20),
-          if (contractDetail.contractRole == ContractRole.lessee)
+          if (contractDetail.contractRole == ContractRole.lessee &&
+              contractDetail.status.index < ContractStatus.complete.index)
             Center(
               child: InkWell(
                 onTap: () {
@@ -401,6 +403,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
           const SizedBox(height: 20),
           TextField(
             onChanged: onDescriptionChanged,
+            maxLines: 5,
             decoration: const InputDecoration(
               label: Text(
                 '요청사항',

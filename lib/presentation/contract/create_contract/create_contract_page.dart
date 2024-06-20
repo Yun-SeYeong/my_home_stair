@@ -281,11 +281,13 @@ class _CreateContractPageState extends State<CreateContractPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                address,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  address,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -294,6 +296,7 @@ class _CreateContractPageState extends State<CreateContractPage> {
         const SizedBox(height: 20),
         TextField(
           controller: controller,
+          maxLines: 2,
           decoration: const InputDecoration(
             label: Text('상세주소'),
             labelStyle: TextStyle(

@@ -114,6 +114,7 @@ List<SingleChildWidget> _initBlocs() {
               context,
               getIt<ContractRepository>(),
               getIt<SharedPreferencesRepository>(),
+              getIt<FileRepository>(),
             )),
     BlocProvider(
       create: (context) => CreateContractPageBloc(

@@ -56,6 +56,15 @@ class _LoginPageState extends State<LoginPage> {
                 focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
                 ),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.greyColor, width: 1.5),
+                ),
+                errorBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 1.5),
+                ),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
+                ),
                 enabled: true,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 error: uiState.isError ? _errorTextWidget('이메일을 확인해주세요') : null,
@@ -74,6 +83,15 @@ class _LoginPageState extends State<LoginPage> {
                   borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
                 ),
                 focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
+                ),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: ColorStyles.greyColor, width: 1.5),
+                ),
+                errorBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red, width: 1.5),
+                ),
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(color: ColorStyles.primaryColor, width: 1.5),
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,

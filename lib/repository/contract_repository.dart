@@ -6,9 +6,11 @@ import 'package:my_home_stair/dto/request/contract/contract_request.dart';
 import 'package:my_home_stair/dto/request/contract/create_file_upload_history_request.dart';
 import 'package:my_home_stair/dto/request/contract/create_special_contract_request.dart';
 import 'package:my_home_stair/dto/request/contract/join_contract_request.dart';
+import 'package:my_home_stair/dto/response/common/common_response.dart';
 import 'package:my_home_stair/dto/response/common/page_response.dart';
+import 'package:my_home_stair/dto/response/contract/archive_file_response.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
-import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
+import 'package:my_home_stair/dto/response/contract/contract_history.dart';
 import 'package:retrofit/http.dart';
 
 import '../dto/response/contract/contract_response.dart';
@@ -30,6 +32,12 @@ abstract class ContractRepository {
   Future<ContractDetailResponse> getContract(
     @Header('Authorization') String authorization,
     @Path('id') String id,
+  );
+
+  @GET('/fileHistories/{keyword}/search')
+  Future<CommonResponse<List<ArchiveFileResponse>>> getContractFileHistories(
+    @Header('Authorization') String authorization,
+    @Path('keyword') String keyword,
   );
 
   @POST('')

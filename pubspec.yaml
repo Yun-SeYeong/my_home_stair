@@ -53,6 +53,8 @@ dependencies:
   web_socket_client: ^0.1.4
   flutter_downloader: ^1.11.7
   downloadsfolder: ^1.1.0
+  bloc_concurrency: ^0.2.5
+  stream_transform: ^2.1.0
 
 dev_dependencies:
   flutter_test:
