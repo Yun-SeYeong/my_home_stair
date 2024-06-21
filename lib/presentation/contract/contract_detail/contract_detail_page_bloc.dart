@@ -12,7 +12,7 @@ import 'package:my_home_stair/dto/request/contract/contract_history_input_text_r
 import 'package:my_home_stair/dto/request/contract/create_file_upload_history_request.dart';
 import 'package:my_home_stair/dto/request/contract/create_special_contract_request.dart';
 import 'package:my_home_stair/dto/response/contract/contract_detail_response.dart';
-import 'package:my_home_stair/my_home_stair.dart';
+import 'package:my_home_stair/main.dart';
 import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/file_download_repository.dart';

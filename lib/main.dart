@@ -24,7 +24,7 @@ import 'presentation/splash/splash_page_bloc.dart';
 import 'repository/file_download_repository.dart';
 
 final getIt = GetIt.instance;
-const String serverHost = '192.168.45.186:8080';
+const String serverHost = '140.238.15.22:9000';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

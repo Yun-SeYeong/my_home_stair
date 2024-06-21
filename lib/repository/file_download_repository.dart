@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:my_home_stair/my_home_stair.dart';
+import 'package:my_home_stair/main.dart';
 
 class FileRepository {
   Future<void> downloadFile(
