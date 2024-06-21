@@ -296,7 +296,6 @@ class _CreateContractPageState extends State<CreateContractPage> {
         const SizedBox(height: 20),
         TextField(
           controller: controller,
-          maxLines: 2,
           decoration: const InputDecoration(
             label: Text('상세주소'),
             labelStyle: TextStyle(

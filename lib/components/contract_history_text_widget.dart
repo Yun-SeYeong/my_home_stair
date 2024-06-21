@@ -12,6 +12,7 @@ class ContractHistoryTextWidget extends StatelessWidget {
   final Function onCopy;
   final Function onConfirm;
   final ValueChanged<String> onChanged;
+  final AnimationController spinController;
 
   const ContractHistoryTextWidget({
     super.key,
@@ -22,6 +23,7 @@ class ContractHistoryTextWidget extends StatelessWidget {
     required this.onCopy,
     required this.onConfirm,
     required this.onChanged,
+    required this.spinController,
   });
 
   @override
@@ -71,7 +73,15 @@ class ContractHistoryTextWidget extends StatelessWidget {
                     ),
                   )
                 else if (status == ContractHistoryWidgetStatus.waiting)
-                  SvgPicture.asset('images/Progress.svg')
+                  AnimatedBuilder(
+                    animation: spinController,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: spinController.value,
+                        child: SvgPicture.asset('images/Progress.svg'),
+                      );
+                    },
+                  )
                 else
                   Container()
               ]),

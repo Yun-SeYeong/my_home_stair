@@ -146,7 +146,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     Emitter<HomePageState> emit,
   ) async {
     if (event.keyword.isEmpty) {
-      emit(state.copy(archiveFileResponse: []));
+      emit(state.copy(archiveFileResponse: [], isLoading: false));
       return;
     }
 

@@ -27,43 +27,60 @@ class DashboardPage extends StatelessWidget {
                 context.read<HomePageBloc>().add(InitStateEvent());
               },
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   const SizedBox(height: 20),
                   _titleWidget(),
                   const SizedBox(height: 20),
-                  if (contracts.isEmpty)
+                  if (contracts.isEmpty && !uiState.isLoading)
                     _emptyContractWidget()
+                  else if (contracts.isEmpty && uiState.isLoading)
+                    ...[
+                      const SizedBox(height: 120),
+                      const SizedBox(
+                        height: 60,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    ]
                   else
                     Expanded(
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         controller: scrollController,
                         physics: const CustomBouncingScrollPhysics(),
-                        itemCount: contracts.length + (uiState.isLoading ? 0 : 1),
+                        itemCount:
+                            contracts.length + (uiState.isLoading ? 0 : 1),
                         separatorBuilder: (context, index) => const SizedBox(
                           height: 20,
                         ),
                         itemBuilder: (context, index) {
                           if (index == contracts.length) {
-                            return contracts.length >= 10 ? const SizedBox(
-                              height: 60,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ) : const SizedBox();
+                            return contracts.length >= 10
+                                ? const SizedBox(
+                                    height: 60,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : const SizedBox();
                           } else {
                             final contract = contracts[index];
                             return ContractStatusWidget(
                               title: contract.contractRole.name,
                               status: contract.status,
-                              address: "${contract.address} ${contract.addressDetail}",
+                              address:
+                                  "${contract.address} ${contract.addressDetail}",
                               onCopy: () {
-                                context.read<HomePageBloc>().add(
-                                    SetClipboardEvent(contract.id));
+                                context
+                                    .read<HomePageBloc>()
+                                    .add(SetClipboardEvent(contract.id));
                               },
                               onClicked: () {
-                                context.read<HomePageBloc>().add(
-                                    LoadContractDetailEvent(contract.id));
+                                context
+                                    .read<HomePageBloc>()
+                                    .add(LoadContractDetailEvent(contract.id));
                               },
                             );
                           }
@@ -88,16 +105,21 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Container _emptyContractWidget() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 60),
-      child: const Center(
-        child: Text(
-          "계약이 없습니다.",
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: ColorStyles.greyColor,
+  Widget _emptyContractWidget() {
+    return const Expanded(
+      child: SingleChildScrollView(
+        physics: CustomBouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 60),
+          child: Center(
+            child: Text(
+              "계약이 없습니다.",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: ColorStyles.greyColor,
+              ),
+            ),
           ),
         ),
       ),

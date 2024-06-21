@@ -17,6 +17,7 @@ import 'package:my_home_stair/dto/response/contract/contract_role.dart';
 import 'package:my_home_stair/dto/response/contract/contract_status.dart';
 import 'package:my_home_stair/dto/response/contract/contract_step.dart';
 import 'package:my_home_stair/presentation/contract/contract_detail/contract_detail_page_bloc.dart';
+import 'package:my_home_stair/presentation/home/home_page.dart';
 
 class ContractDetailPage extends StatefulWidget {
   static const String route = "ContractDetailPage";
@@ -37,9 +38,10 @@ enum RequestMenuStatus {
 }
 
 class _ContractDetailPageState extends State<ContractDetailPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   RequestMenuStatus _requestMenuStatus = RequestMenuStatus.menuClosed;
   late AnimationController _controller;
+  late AnimationController _spinController;
 
   @override
   void initState() {
@@ -53,12 +55,25 @@ class _ContractDetailPageState extends State<ContractDetailPage>
       upperBound: 0.7854,
       vsync: this,
     );
+    _spinController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      upperBound: 2 * pi,
+      vsync: this,
+    );
+    _spinController.repeat();
   }
 
   @override
   void didChangeDependencies() {
     context.read<ContractDetailPageBloc>().add(DisposeEvent());
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _spinController.dispose();
+    super.dispose();
   }
 
   @override
@@ -153,6 +168,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
                     .read<ContractDetailPageBloc>()
                     .add(CreateFileUploadHistoryEvent());
                 setState(() {
+                  _controller.reverse();
                   _requestMenuStatus = RequestMenuStatus.menuClosed;
                 });
               },
@@ -176,6 +192,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
                     .read<ContractDetailPageBloc>()
                     .add(CreateSpecialContractHistoryEvent());
                 setState(() {
+                  _controller.reverse();
                   _requestMenuStatus = RequestMenuStatus.menuClosed;
                 });
               },
@@ -525,6 +542,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
                   .read<ContractDetailPageBloc>()
                   .add(ContractHistoryCheckEvent(contractHistory.id));
             },
+            spinController: _spinController,
           ),
         ];
       case ContractHistoryType.file:
@@ -545,6 +563,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
                   .read<ContractDetailPageBloc>()
                   .add(ContractHistoryUploadFileEvent(contractHistory.id));
             },
+            spinController: _spinController,
           )
         ];
       case ContractHistoryType.text:
@@ -558,7 +577,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
             onCopy: () {
               context
                   .read<ContractDetailPageBloc>()
-                  .add(SetClipboardEvent(contractHistory.description));
+                  .add(SetClipboardEvent(contractHistory.textInput ?? ''));
             },
             onConfirm: () {
               context
@@ -570,6 +589,7 @@ class _ContractDetailPageState extends State<ContractDetailPage>
                   ContractHistoryInputTextChangedEvent(
                       text, contractHistory.id));
             },
+            spinController: _spinController,
           )
         ];
       default:
@@ -599,7 +619,8 @@ class _ContractDetailPageState extends State<ContractDetailPage>
         children: [
           InkWell(
             onTap: () {
-              Navigator.of(context).pop();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomePage.route, (route) => false);
             },
             child: SvgPicture.asset(
               'images/Expand_left.svg',

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,9 @@ import 'package:my_home_stair/components/color_styles.dart';
 import 'package:my_home_stair/dto/request/contract/contract_request.dart';
 import 'package:my_home_stair/dto/request/contract/join_contract_request.dart';
 import 'package:my_home_stair/dto/response/contract/contract_role.dart';
+import 'package:my_home_stair/presentation/home/home_page.dart';
+import 'package:my_home_stair/presentation/home/home_page_bloc.dart';
+import 'package:my_home_stair/presentation/login/login_page.dart';
 import 'package:my_home_stair/repository/contract_repository.dart';
 import 'package:my_home_stair/repository/shared_preferences_repository.dart';
 
@@ -34,11 +39,11 @@ class CreateContractPageBloc
     var tokenResponse = await _sharedPreferencesRepository.getTokenResponse();
 
     if (tokenResponse == null) {
-      emit(state.copy(isLoading: false));
+      if (!_context.mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+          _context, LoginPage.route, (route) => false);
       return;
     }
-
-    print(tokenResponse.accessToken);
 
     switch (state.pageIndex) {
       case 0:
@@ -79,15 +84,17 @@ class CreateContractPageBloc
               contractRole: state.contractRole,
             ),
           );
+          if (!_context.mounted) {
+            throw Exception('Context is not mounted');
+          } else {
+            emit(state.copy(isLoading: false));
+            Navigator.pushNamedAndRemoveUntil(
+                _context, HomePage.route, (route) => false);
+          }
         } catch (e) {
           _showToast('계약을 생성하는데 실패했습니다.');
           emit(state.copy(isLoading: false));
           return;
-        }
-        if (!_context.mounted) {
-          throw Exception('Context is not mounted');
-        } else {
-          Navigator.pop(_context);
         }
         break;
       case 4:
@@ -105,18 +112,17 @@ class CreateContractPageBloc
               contractRole: state.contractRole,
             ),
           );
+          if (!_context.mounted) {
+            throw Exception('Context is not mounted');
+          } else {
+            emit(state.copy(isLoading: false));
+            Navigator.pushNamedAndRemoveUntil(
+                _context, HomePage.route, (route) => false);
+          }
         } catch (e) {
           _showToast('코드를 다시 확인해주세요.');
           emit(state.copy(isLoading: false));
           return;
-        }
-
-        emit(state.copy(isLoading: false));
-
-        if (!_context.mounted) {
-          throw Exception('Context is not mounted');
-        } else {
-          Navigator.pop(_context);
         }
         break;
     }

@@ -11,6 +11,7 @@ class ContractHistoryFileWidget extends StatelessWidget {
   final ContractHistoryWidgetStatus status;
   final Function onDownload;
   final Function onConfirm;
+  final AnimationController spinController;
 
   const ContractHistoryFileWidget({
     super.key,
@@ -20,6 +21,7 @@ class ContractHistoryFileWidget extends StatelessWidget {
     required this.status,
     required this.onDownload,
     required this.onConfirm,
+    required this.spinController,
   });
 
   @override
@@ -78,7 +80,15 @@ class ContractHistoryFileWidget extends StatelessWidget {
                     ),
                   )
                 else if (status == ContractHistoryWidgetStatus.waiting)
-                  SvgPicture.asset('images/Progress.svg')
+                  AnimatedBuilder(
+                    animation: spinController,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: spinController.value,
+                        child: SvgPicture.asset('images/Progress.svg'),
+                      );
+                    },
+                  )
                 else
                   Container()
               ]),

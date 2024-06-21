@@ -8,6 +8,7 @@ class ContractHistoryCheckWidget extends StatelessWidget {
   final String description;
   final ContractHistoryWidgetStatus status;
   final Function onConfirm;
+  final AnimationController spinController;
 
   const ContractHistoryCheckWidget({
     super.key,
@@ -15,6 +16,7 @@ class ContractHistoryCheckWidget extends StatelessWidget {
     required this.description,
     required this.status,
     required this.onConfirm,
+    required this.spinController,
   });
 
   @override
@@ -52,7 +54,15 @@ class ContractHistoryCheckWidget extends StatelessWidget {
               if (status == ContractHistoryWidgetStatus.accepted)
                 SvgPicture.asset('images/Check_fill.svg')
               else if (status == ContractHistoryWidgetStatus.waiting)
-                SvgPicture.asset('images/Progress.svg')
+                AnimatedBuilder(
+                  animation: spinController,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: spinController.value,
+                      child: SvgPicture.asset('images/Progress.svg'),
+                    );
+                  },
+                )
               else
                 Container()
             ],
